@@ -12,13 +12,7 @@
 <table class="table">
     <tr>
         <th>
-            Project Manager ID
-        </th>
-        <th>
-            Project Manager
-        </th>
-        <th>
-            Administrator ID
+            Project Title
         </th>
         <th>Create Date</th>
         <th>Update Date</th>
@@ -29,13 +23,8 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.ProjectManagerId)
+            @Html.DisplayFor(modelItem => item.ProjectTitle)
            
-        </td>
-        <td></td>
-        <td>
-            
-            @Html.DisplayFor(modelItem => item.AdminId)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.CreateDate)

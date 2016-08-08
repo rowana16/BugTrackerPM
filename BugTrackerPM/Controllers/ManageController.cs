@@ -214,7 +214,7 @@ namespace BugTrackerPM.Controllers
             return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
         }
     // ================================== Change Name Controller ==================================================================
-    /*
+    
         public ActionResult ChangeUsername()
         {
             return View();
@@ -226,10 +226,27 @@ namespace BugTrackerPM.Controllers
             {
                 return View(model);
             }
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            user.FirstName = model.NewFirstName;
+            user.LastName = model.NewLastName;
+            user.UserName = model.NewUserName;
 
-            var result = await UserManager.UpdateAsync(User.Identity.GetUserId(), model.NewUserName);
+            var result = await UserManager.UpdateAsync(user);
+            if(result.Succeeded)
+            {
+
+                if (user != null)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                }
+
+                return RedirectToAction("Index", "Manage");
+            }
+            AddErrors(result);
+            return View(model);
         }
-    */
+    
     // ================================== END: Change Name Controller ==================================================================
         //
         // GET: /Manage/ChangePassword

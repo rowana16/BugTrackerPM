@@ -16,11 +16,10 @@ namespace BugTrackerPM.Models
 
         public ApplicationUser()
         {
-            this.Project = new HashSet<Project>();
+            this.Projects = new HashSet<Project>();
         }
 
         public virtual ICollection<Project> Projects { get; set; }
-        public HashSet<Project> Project { get; set; }
 
 
 

@@ -15,6 +15,7 @@ namespace BugTrackerPM.Models
         public string ProjectTitle { get; set; }    
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
+        
 
         public virtual ICollection<ApplicationUser> Users { get; set; }
 
