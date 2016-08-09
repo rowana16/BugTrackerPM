@@ -220,6 +220,7 @@ namespace BugTrackerPM.Controllers
             return View();
         }
 
+        [HttpPost]
         public async Task<ActionResult> ChangeUsername(ChangeUserNameViewModel model)
         {
             if(!ModelState.IsValid)

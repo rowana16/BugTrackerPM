@@ -17,7 +17,7 @@ namespace BugTrackerPM.Migrations
 
         protected override void Seed(BugTrackerPM.Models.ApplicationDbContext context)
         {
-    //==============================  Roles  ===========================================================
+            //==============================  Roles  ===========================================================
             var roleManager = new RoleManager<IdentityRole>(
             new RoleStore<IdentityRole>(context));
 
@@ -50,8 +50,8 @@ namespace BugTrackerPM.Migrations
                 roleManager.Create(new IdentityRole { Name = "Submitter" });
             }
 
-    //==============================  Seed Users  ===========================================================
-            
+            //==============================  Seed Users  ===========================================================
+
 
             var userManager = new UserManager<ApplicationUser>(
             new UserStore<ApplicationUser>(context));
