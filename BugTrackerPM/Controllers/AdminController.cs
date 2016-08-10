@@ -24,7 +24,7 @@ namespace BugTrackerPM.Controllers
             UserRolesHelper helper = new UserRolesHelper(db);
 
             //Set each property of the AdminUserViewModel with help of UserRolesHelper
-
+            
             AdminModel.id = user.Id;
             AdminModel.name = user.FirstName + " " + user.LastName;
 
@@ -36,13 +36,15 @@ namespace BugTrackerPM.Controllers
             return View(AdminModel);
         }
 
-        public ActionResult AddRole(string Id, List<string> SelectedAbsentRole)
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddRole(string Id, List<string> SelectedAbsentRoles)
         {
             var helper = new UserRolesHelper(db);
 
             if (ModelState.IsValid)
             {
-                foreach (string role in SelectedAbsentRole)
+                foreach (string role in SelectedAbsentRoles)
                 {
                     helper.AddUserToRole(Id, role);
                 }
@@ -51,6 +53,8 @@ namespace BugTrackerPM.Controllers
             return RedirectToAction("Edit","Admin", new { id = Id });
         }
 
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public ActionResult RemoveRole(string Id, List<string> SelectedCurrentRoles)
         {
             var helper = new UserRolesHelper(db);

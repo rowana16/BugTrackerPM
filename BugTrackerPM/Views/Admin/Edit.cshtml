@@ -12,6 +12,7 @@
             <h3>Currently Assigned Roles</h3>
             @using (Html.BeginForm("RemoveRole", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
+                @Html.AntiForgeryToken()
                  @Html.Hidden("id", Model.id)
                  @Html.ListBox("SelectedCurrentRoles", Model.roles, new { style = "width:250px;" })
                 <div class="col-md-10">
@@ -23,6 +24,7 @@
             <h3>Currently Unassigned Roles</h3>
             @using (Html.BeginForm("AddRole", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
+                @Html.AntiForgeryToken()
                 @Html.Hidden("id",Model.id)
                 @Html.ListBox("SelectedAbsentRoles", Model.absentRoles, new { style = "width:250px;" })
                 <div class="col-md-10">

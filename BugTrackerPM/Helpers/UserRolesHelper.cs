@@ -36,6 +36,20 @@ namespace BugTrackerPM.Helpers
 
         public IList<string> ListAbsentUserRoles(string userId)
         {
+            /*
+             * var roles = roleManager.Roles.Where(r=> r.Name != null).select(r=> r.Name).ToList();
+             * var AbsentuserRoles = new List<string>();
+             * foreach(var role in roles)
+             * {
+             *  if(!IsUserInRole(userId, role))
+             *  {
+             *      Absent UserRoles.Add(role);
+             *  }
+             * }
+             * return AbsentUserRoles;
+             */
+
+
             string[] roles = new string[100];
             string[] currRoles = new string[100];
            // string[] absentRoles = new string[100];
