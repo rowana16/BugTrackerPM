@@ -34,6 +34,55 @@ namespace BugTrackerPM.Helpers
             return userManager.GetRoles(userId);
         }
 
+        public IList<string> ListAbsentUserRoles(string userId)
+        {
+            string[] roles = new string[100];
+            string[] currRoles = new string[100];
+           // string[] absentRoles = new string[100];
+            int iCount = 0;
+            int iRoles = 0;
+
+
+            //  Fill Current Roles Array for this User
+            List<string> currentRoles = userManager.GetRoles(userId).ToList();
+            foreach(string c in currentRoles)
+            {
+                currRoles[iCount] = c;
+                iCount++;
+            }
+
+            iCount = 0;
+
+            // Fill Array with All Roles Possible
+            IList<IdentityRole> allRoleItems = roleManager.Roles.ToList();
+            foreach (IdentityRole R in allRoleItems)
+            {
+                roles[iCount]= R.Name;
+                iCount++;
+            }
+            iCount = 0;  
+                
+            // Go through list of currRoles and remove them from the roles list to develop list of Absent Roles
+            foreach (string c in currRoles)
+            {
+                foreach (string r in roles)
+                {
+                    if (currRoles[iCount] == roles[iRoles])
+                    {
+                        roles[iRoles] = "";
+                    }
+                    iRoles++;
+                }
+                iRoles = 0;
+                iCount++;
+            }
+
+            IList<string> absentRoles = roles;
+
+            return (absentRoles);
+
+        }
+
         public bool AddUserToRole(string userId, string roleName)
         {
             var result = userManager.AddToRole(userId, roleName);

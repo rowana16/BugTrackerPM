@@ -1,0 +1,49 @@
+﻿@using BugTrackerPM.Models
+@model AdminUserViewModel
+@{ 
+    ViewBag.Title = "AssignUserRoles";
+}
+
+<h2>Manager User Roles</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Currently Assigned Roles</h3>
+            @using (Html.BeginForm("RemoveRole", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                 @Html.Hidden("id", Model.id)
+                 @Html.ListBox("SelectedCurrentRoles", Model.roles, new { style = "width:250px;" })
+                <div class="col-md-10">
+                    <input type="submit" class="btn btn-primary" value="Remove Highlighted Roles" />
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            <h3>Currently Unassigned Roles</h3>
+            @using (Html.BeginForm("AddRole", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.Hidden("id",Model.id)
+                @Html.ListBox("SelectedAbsentRoles", Model.absentRoles, new { style = "width:250px;" })
+                <div class="col-md-10">
+                    <input type="submit" class="btn btn-primary" value="Add Highlighted Roles" />
+                </div>
+            }
+
+        </div>
+        
+    </div>
+    <div class="row">
+        <hr />
+        @Html.ActionLink("Return to Index", "Index")
+    </div>
+
+</div>
+
+
+
+
+<hr />
+
+
+
