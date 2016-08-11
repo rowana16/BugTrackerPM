@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BugTrackerPM.Helpers;
+using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -12,18 +14,42 @@ namespace BugTrackerPM.Models
     public class ProjectsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-/* ==============================================  Get Dashboard List ===================================*/
+        
+
+        /* ==============================================  Get Dashboard List ===================================*/
         // GET: Projects
         [Authorize(Roles = "Admin, ProjectManager, Developer")]
         public ActionResult Index()
         {
+            ProjectIndexViewModel passModel = new ProjectIndexViewModel();
+            UserRolesHelper helper = new UserRolesHelper(db);
 
-            List<Project> projects = new list<Project>();
+            //Get list of User Roles
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var roles = helper.ListUserRoles(userId);
+
+
+            //if UserRole includes "Admin"
+            foreach (string i in roles)
+            {
+                if (i == "Admin")
+                {
+                    passModel.currentProjects = db.Projects.ToList();
+                    passModel.loggedInUser = user;
+                    return View(passModel);
+                    
+                }
+            }
 
 
 
+            //Otherwise Return just assigned Projects
+            //Build View Model
+            passModel.currentProjects = user.Projects.ToList();
+            passModel.loggedInUser = user;
 
-            return View(db.Projects.ToList());
+            return View(passModel);
         }
 
 

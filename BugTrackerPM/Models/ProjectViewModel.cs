@@ -17,4 +17,10 @@ namespace BugTrackerPM.Models
         public string[] assignments { get; set; }
         public string[] removals { get; set; }
     }
+
+    public class ProjectIndexViewModel
+    {
+        public ApplicationUser loggedInUser { get; set; }
+        public List<Project> currentProjects { get; set; }
+    }
 }
