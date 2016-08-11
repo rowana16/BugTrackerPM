@@ -12,13 +12,23 @@ namespace BugTrackerPM.Models
     public class ProjectsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
+/* ==============================================  Get Dashboard List ===================================*/
         // GET: Projects
         [Authorize(Roles = "Admin, ProjectManager, Developer")]
         public ActionResult Index()
         {
+
+            List<Project> projects = new list<Project>();
+
+
+
+
             return View(db.Projects.ToList());
         }
+
+
+/* ==============================================  End Dashboard List ===================================*/
+
 
         // GET: Projects/Details/5
         public ActionResult Details(int? id)
@@ -67,7 +77,7 @@ namespace BugTrackerPM.Models
 /* ================================Edit Action ==============================================*/
 
         // GET: Projects/Edit/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Project Manager")]
         public ActionResult Edit(int? id)
         {          
             if (id == null)
@@ -78,15 +88,15 @@ namespace BugTrackerPM.Models
             ProjectEditViewModel EditViewModel = new ProjectEditViewModel();
 
             //////////// Get Project and All Users //////////////////////
-            var userFilter = db.Users.ToList();
+            var allUsers = db.Users.ToList();
             EditViewModel.project = db.Projects.Find(id);
-
+            var assignedUsers = EditViewModel.project.Users;
             //////////// Create List of Absent Users //////////////////////
 
             var absentUsersList = new List<ApplicationUser>();
             bool found = false;
 
-            foreach (var filter in userFilter)
+            foreach (var filter in allUsers)
             {
                 foreach (var projectUser in EditViewModel.project.Users)
                 {
@@ -106,23 +116,8 @@ namespace BugTrackerPM.Models
             EditViewModel.absentUserList = absentUsersList;
 
             //////////// Create Multi Select Lists //////////////////////
-            IList<string> transfer = new List<string>();
-
-            foreach (var i in absentUsersList)
-            {
-                transfer.Add(i.FirstName + " " + i.LastName);
-            }
-
-            EditViewModel.absentUsers = new MultiSelectList(transfer);
-
-            IList<string> transfer2 = new List<string>();
-            foreach (var i in EditViewModel.project.Users)
-            {
-                transfer2.Add(i.FirstName + " " + i.LastName);
-            }
-            EditViewModel.assignedUsers = new MultiSelectList(transfer2);
-
-
+            EditViewModel.absentUsers = new MultiSelectList(absentUsersList, "Id", "DisplayName");
+            EditViewModel.assignedUsers = new MultiSelectList(assignedUsers, "Id", "DisplayName");
 
             if (EditViewModel.project == null)
             {
@@ -131,28 +126,90 @@ namespace BugTrackerPM.Models
             return View(EditViewModel);
         }
 
-        // POST: Projects/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+      /*========================================== Edit Post Functions ======================================================== */
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit( Project project)
+        [Authorize(Roles = "Admin, Project Manager")]
+        public ActionResult AddAssignment( int? id, List<string> SelectedAbsentAssignments)
         {
             //project.ProjectTitle = ProjectTitle;
+            Project project = db.Projects.Find(id);
             project.UpdateDate = DateTime.Now;
 
-           
+            //Get Users from userIds 
+            ICollection<ApplicationUser> transfer = new List<ApplicationUser>();
 
+           foreach(string i in SelectedAbsentAssignments)
+            {
+                transfer.Add(db.Users.Find(i));    
+            }
 
+            //Add userIds to project
+            project.Users = transfer;
+
+            
+            
+            //Save project
             if (ModelState.IsValid)
             {
                 db.Entry(project).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Edit", "Projects", new { id = id });
             }
-            return View(project);
+            return RedirectToAction("Edit", "Projects" ,new { id = id }) ;
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Project Manager")]
+        public ActionResult RemoveAssignment ( int? id, List<string> SelectedCurrentAssignments)
+        {
+            Project project = db.Projects.Find(id);
+            project.UpdateDate = DateTime.Now;
+
+            //Get Users from userIds
+            ICollection<ApplicationUser> remove = new List<ApplicationUser>();
+
+            foreach (string i in SelectedCurrentAssignments)
+            {
+                remove.Add(db.Users.Find(i));
+            }
+
+            // remove users from project
+            ICollection<ApplicationUser> remain = new List<ApplicationUser>();
+            bool found = new bool();
+
+            foreach (ApplicationUser p in project.Users)
+            {
+                foreach(ApplicationUser r in remove)
+                {
+                    if (r==p)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found == false)
+                {
+                    remain.Add(p);
+                }
+                found = false;
+            }
+
+            project.Users = remain;
+            //Save project
+            if (ModelState.IsValid)
+            {
+                db.Entry(project).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Edit", "Projects", new { id = id });
+            }
+
+            return RedirectToAction("Edit", "Projects", new { id = id });
+        }
+
+        /*========================================== Delete Functions ======================================================== */
         // GET: Projects/Delete/5
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)

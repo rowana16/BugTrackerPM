@@ -13,5 +13,8 @@ namespace BugTrackerPM.Models
         
         public MultiSelectList assignedUsers { get; set; }
         public MultiSelectList absentUsers { get; set; }
+
+        public string[] assignments { get; set; }
+        public string[] removals { get; set; }
     }
 }

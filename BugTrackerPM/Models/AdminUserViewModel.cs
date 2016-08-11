@@ -16,7 +16,7 @@ namespace BugTrackerPM.Models
         public MultiSelectList roles { get; set; }
         public MultiSelectList absentRoles { get; set; }
 
-        public string[] SelectedCurrentRoles { get; set; }
+        //public string[] SelectedCurrentRoles { get; set; }
         public string[] SelectedAbsentRoles { get; set; }
 
         //public ApplicationUser User { get; set; }
