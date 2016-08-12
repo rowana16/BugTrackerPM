@@ -45,13 +45,13 @@ namespace BugTrackerPM.Models
         }
 
         public System.Data.Entity.DbSet<BugTrackerPM.Models.Project> Projects { get; set; }
-        public System.Data.Entity.DbSet<BugTrackerPM.Models.Project> Ticket { get; set; }
-        public System.Data.Entity.DbSet<BugTrackerPM.Models.Project> TicketAttachment { get; set; }
-        public System.Data.Entity.DbSet<BugTrackerPM.Models.Project> TicketComment { get; set; }
-        public System.Data.Entity.DbSet<BugTrackerPM.Models.Project> TicketHistory { get; set; }
-        public System.Data.Entity.DbSet<BugTrackerPM.Models.Project> Type { get; set; }
-        public System.Data.Entity.DbSet<BugTrackerPM.Models.Project> Prioritiy { get; set; }
-        public System.Data.Entity.DbSet<BugTrackerPM.Models.Project> Status { get; set; }
+        public System.Data.Entity.DbSet<BugTrackerPM.Models.Ticket> Ticket { get; set; }
+        public System.Data.Entity.DbSet<BugTrackerPM.Models.TicketAttachment> TicketAttachment { get; set; }
+        public System.Data.Entity.DbSet<BugTrackerPM.Models.TicketComment> TicketComment { get; set; }
+        public System.Data.Entity.DbSet<BugTrackerPM.Models.TicketHistory> TicketHistory { get; set; }
+        public System.Data.Entity.DbSet<BugTrackerPM.Models.TicketType> TicketType { get; set; }
+        public System.Data.Entity.DbSet<BugTrackerPM.Models.Priority> Prioritiy { get; set; }
+        public System.Data.Entity.DbSet<BugTrackerPM.Models.Status> Status { get; set; }
 
     }
 }

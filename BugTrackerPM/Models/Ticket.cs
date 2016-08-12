@@ -20,7 +20,7 @@ namespace BugTrackerPM.Models
         public string AssignedId { get; set; }
         public int ProjectId { get; set; }
         public int PriorityId { get; set; }
-        public int TypeId { get; set; }
+        public int TicketTypeId { get; set; }
         public int StatusId { get; set; }
         public string Description { get; set; }
         public DateTime CreateDate { get; set; }
@@ -30,7 +30,7 @@ namespace BugTrackerPM.Models
         public virtual ApplicationUser Assigned { get; set; }
         public virtual Project Project { get; set; }
         public virtual Priority Priority { get; set; }
-        public virtual Type Type { get; set; }
+        public virtual TicketType TicketType { get; set; }
         public virtual Status Status { get; set; }
 
         public virtual ICollection<TicketComment> TicketComments { get; set; }

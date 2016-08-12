@@ -5,9 +5,9 @@ using System.Web;
 
 namespace BugTrackerPM.Models
 {
-    public class Type
+    public class TicketType
     {
-        public Type()
+        public TicketType()
         {
             this.Tickets = new HashSet<Ticket>();
             this.TicketHistories = new HashSet<TicketHistory>();

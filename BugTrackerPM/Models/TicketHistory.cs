@@ -18,7 +18,7 @@ namespace BugTrackerPM.Models
         public virtual ApplicationUser Assigned { get; set; }
         public virtual Project Project { get; set; }
         public virtual string Priority { get; set; }
-        public virtual string Type { get; set; }
+        public virtual string TicketType { get; set; }
         public virtual string Status { get; set; }
         public virtual Ticket Ticket { get; set; }
 

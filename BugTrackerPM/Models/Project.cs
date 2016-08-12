@@ -10,6 +10,8 @@ namespace BugTrackerPM.Models
         public Project()
         {
             this.Users = new HashSet<ApplicationUser>();
+            this.Tickets = new HashSet<Ticket>();
+            
         }
         public int Id { get; set; }
         public string ProjectTitle { get; set; }    
@@ -18,6 +20,7 @@ namespace BugTrackerPM.Models
         
 
         public virtual ICollection<ApplicationUser> Users { get; set; }
+        public virtual ICollection<Ticket> Tickets { get; set; }
 
     }
 }
