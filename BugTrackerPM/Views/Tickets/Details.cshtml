@@ -10,77 +10,24 @@
     <h4>Ticket</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Assigned.FirstName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Assigned.FirstName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Priority.PriorityLevel)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Priority.PriorityLevel)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Project.ProjectTitle)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Project.ProjectTitle)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Status.StatusDescription)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Status.StatusDescription)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Submitter.FirstName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Submitter.FirstName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TicketType.TypeDescription)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TicketType.TypeDescription)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CreateDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CreateDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UpdatedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UpdatedDate)
-        </dd>
+        <dt>Submitting User: </dt>
+        <dd>@Html.DisplayFor(model=> model.Submitter.DisplayName) </dd>
+        <dt>Assigned User: </dt>
+        <dd>@Html.DisplayFor(model => model.Assigned.DisplayName) </dd>
+        <dt>Priority:</dt>
+        <dd>@Html.DisplayFor(model => model.Priority.PriorityLevel)        </dd>
+        <dt>Project: </dt>
+        <dd>@Html.DisplayFor(model => model.Project.ProjectTitle)        </dd>
+        <dt>Ticket Status:</dt>
+        <dd>@Html.DisplayFor(model => model.Status.StatusDescription)        </dd>        
+        <dt>Ticket Type:</dt>
+        <dd>@Html.DisplayFor(model => model.TicketType.TypeDescription)        </dd>
+        <dt>Ticket Description:</dt>
+        <dd>@Html.DisplayFor(model => model.Description)        </dd>
+        <dt>Create Date:</dt>
+        <dd>@Html.DisplayFor(model => model.CreateDate)        </dd>
+        <dt>Update Date:</dt>
+        <dd>@Html.DisplayFor(model => model.UpdatedDate)        </dd>
 
     </dl>
 </div>

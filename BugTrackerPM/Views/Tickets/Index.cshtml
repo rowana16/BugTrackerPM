@@ -1,4 +1,5 @@
-﻿@model IEnumerable<BugTrackerPM.Models.Ticket>
+﻿@using BugTrackerPM.Models
+@model TicketViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -11,69 +12,34 @@
 </p>
 <table class="table">
     <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Assigned.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Priority.PriorityLevel)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Project.ProjectTitle)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Status.StatusDescription)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Submitter.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TicketType.TypeDescription)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreateDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UpdatedDate)
-        </th>
-        <th></th>
+
+        <th> Project Title</th>
+        <th> Ticket Description</th>
+        <th> Prioritiy Level</th>
+        <th> Ticket Status</th>
+        <th> Assigned User</th>
+        <th> Ticket Submitter</th>
+        <th> Create Date</th>
+        <th> Update Date</th>
+
+        
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.Ticket)
+{
     <tr>
+        <td> @Html.DisplayFor(modelItem => item.Project.ProjectTitle) </td>
+        <td> @Html.DisplayFor(modelItem => item.Description)</td>
+        <td> @Html.DisplayFor(modelItem => item.Priority.PriorityLevel)</td>
+        <td>@Html.DisplayFor(modelItem => item.Status.StatusDescription)      </td>
+        <td>@Html.DisplayFor(modelItem => item.Assigned.DisplayName)  </td>
+        <td>@Html.DisplayFor(modelItem => item.Submitter.DisplayName) </td>
+        <td>@Html.DisplayFor(modelItem => item.CreateDate)  </td>
+        <td>@Html.DisplayFor(modelItem => item.UpdatedDate) </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Assigned.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Priority.PriorityLevel)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Project.ProjectTitle)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Status.StatusDescription)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Submitter.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TicketType.TypeDescription)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreateDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UpdatedDate)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
         </td>
     </tr>
 }
