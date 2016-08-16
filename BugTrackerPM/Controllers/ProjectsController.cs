@@ -162,6 +162,12 @@ namespace BugTrackerPM.Models
             Project project = db.Projects.Find(id);
             project.UpdateDate = DateTime.Now;
 
+            if (SelectedAbsentAssignments == null)
+            {
+                return RedirectToAction("Edit", "Projects", new { id = id });
+            }
+
+
             //Get Users from userIds 
             ICollection<ApplicationUser> transfer = new List<ApplicationUser>();
 
@@ -192,6 +198,11 @@ namespace BugTrackerPM.Models
         {
             Project project = db.Projects.Find(id);
             project.UpdateDate = DateTime.Now;
+            
+            if(SelectedCurrentAssignments == null)
+            {
+                return RedirectToAction("Edit", "Projects", new { id = id });
+            }
 
             //Get Users from userIds
             ICollection<ApplicationUser> remove = new List<ApplicationUser>();

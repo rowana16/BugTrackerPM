@@ -40,6 +40,11 @@ namespace BugTrackerPM.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddRole(string Id, List<string> SelectedAbsentRoles)
         {
+            if (SelectedAbsentRoles == null)
+            {
+                return RedirectToAction("Edit", "Admin", new { id = Id });
+            }
+
             var helper = new UserRolesHelper(db);
 
             if (ModelState.IsValid)
@@ -57,6 +62,12 @@ namespace BugTrackerPM.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RemoveRole(string Id, List<string> SelectedCurrentRoles)
         {
+            if (SelectedCurrentRoles == null)
+            {
+                return RedirectToAction("Edit", "Admin", new { id = Id });
+            }
+
+
             var helper = new UserRolesHelper(db);
 
             if (ModelState.IsValid)
