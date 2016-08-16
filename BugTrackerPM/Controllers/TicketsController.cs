@@ -171,6 +171,10 @@ namespace BugTrackerPM.Models
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,SubmitterId,AssignedId,ProjectId,PriorityId,TicketTypeId,StatusId,Description,CreateDate,UpdatedDate")] Ticket ticket)
         {
+            
+            //ticket.CreateDate = DateTime.Now;
+            ticket.UpdatedDate = DateTime.Now;
+
             if (ModelState.IsValid)
             {
                 db.Entry(ticket).State = EntityState.Modified;

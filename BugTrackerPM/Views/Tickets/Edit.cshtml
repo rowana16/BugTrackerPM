@@ -17,34 +17,17 @@
         @Html.HiddenFor(model => model.Id)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.SubmitterId, "SubmitterId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("SubmitterId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.SubmitterId, "", new { @class = "text-danger" })
-            </div>
+            <label class="control-label col-md-2">Project Name</label>
+            <div class="col-md-10">@Html.DisplayFor(m => m.Project.ProjectTitle)</div>
+            @Html.HiddenFor(m => m.ProjectId )
         </div>
 
+
         <div class="form-group">
-            @Html.LabelFor(model => model.AssignedId, "AssignedId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2">Assigned</label>
             <div class="col-md-10">
                 @Html.DropDownList("AssignedId", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.AssignedId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProjectId, "ProjectId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("ProjectId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.ProjectId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.PriorityId, "PriorityId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("PriorityId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.PriorityId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -73,27 +56,37 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.CreateDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CreateDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CreateDate, "", new { @class = "text-danger" })
-            </div>
+            <label class="control-label col-md-2">Submitter Id</label>
+            <div class="col-md-10"> @Html.DisplayFor(m => m.Submitter.DisplayName)</div>
+            @Html.HiddenFor(m => m.SubmitterId )
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.UpdatedDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.UpdatedDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.UpdatedDate, "", new { @class = "text-danger" })
-            </div>
+            <label class="control-label col-md-2">Priority</label>
+            <div class="col-md-10">@Html.DisplayFor(m => m.Priority.PriorityLevel)</div>
+            @Html.HiddenFor(m => m.PriorityId )
         </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Create Date</label>
+            <div class="col-md-10">@Html.DisplayFor(m => m.CreateDate)</div>
+            @Html.HiddenFor(m=>m.CreateDate)
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Update Date</label>
+            <div class="col-md-10">@Html.DisplayFor(m => m.UpdatedDate) </div>
+        </div>
+
+        
+
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
+            </div>
         </div>
-    </div>
 }
 
 <div>

@@ -22,3 +22,38 @@ select,
 textarea {
     max-width: 280px;
 }
+
+label {
+    color: white;
+    font-size : 1.7rem;
+}
+
+th{
+    color:white;
+    font-size: 1.7rem;
+}
+
+td{
+    color:navy;
+    background-color:white;
+}
+
+td a{
+    color:navy !important;
+    font-size:1rem;
+}
+
+.paginate_button{
+    background-color:white;
+}
+
+#myTable_info{
+    color:white;
+}
+#myTable_previous{
+    background-color:white;
+}
+
+select {
+    color:navy;
+}

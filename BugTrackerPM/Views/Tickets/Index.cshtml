@@ -10,38 +10,39 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
+<table class="table display" id="myTable">
+    <thead>
+        <tr>
+            <th> Project Title</th>
+            <th> Ticket Description</th>
+            <th> Prioritiy Level</th>
+            <th> Ticket Status</th>
+            <th> Assigned User</th>
+            <th> Ticket Submitter</th>
+            <th> Create Date</th>
+            <th> Update Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Ticket)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Project.ProjectTitle) </td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.Priority.PriorityLevel)</td>
+                <td>@Html.DisplayFor(modelItem => item.Status.StatusDescription)      </td>
+                <td>@Html.DisplayFor(modelItem => item.Assigned.DisplayName)  </td>
+                <td>@Html.DisplayFor(modelItem => item.Submitter.DisplayName) </td>
+                <td>@Html.DisplayFor(modelItem => item.CreateDate)  </td>
+                <td>@Html.DisplayFor(modelItem => item.UpdatedDate) </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
 
-        <th> Project Title</th>
-        <th> Ticket Description</th>
-        <th> Prioritiy Level</th>
-        <th> Ticket Status</th>
-        <th> Assigned User</th>
-        <th> Ticket Submitter</th>
-        <th> Create Date</th>
-        <th> Update Date</th>
-
-        
-    </tr>
-
-@foreach (var item in Model.Ticket)
-{
-    <tr>
-        <td> @Html.DisplayFor(modelItem => item.Project.ProjectTitle) </td>
-        <td> @Html.DisplayFor(modelItem => item.Description)</td>
-        <td> @Html.DisplayFor(modelItem => item.Priority.PriorityLevel)</td>
-        <td>@Html.DisplayFor(modelItem => item.Status.StatusDescription)      </td>
-        <td>@Html.DisplayFor(modelItem => item.Assigned.DisplayName)  </td>
-        <td>@Html.DisplayFor(modelItem => item.Submitter.DisplayName) </td>
-        <td>@Html.DisplayFor(modelItem => item.CreateDate)  </td>
-        <td>@Html.DisplayFor(modelItem => item.UpdatedDate) </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-        </td>
-    </tr>
-}
-
+        }
+    </tbody>
 </table>
