@@ -1,4 +1,5 @@
-﻿@model BugTrackerPM.Models.Ticket
+﻿@using BugTrackerPM.Models
+@model TicketDetailsViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -9,29 +10,87 @@
 <div>
     <h4>Ticket</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>Submitting User: </dt>
-        <dd>@Html.DisplayFor(model=> model.Submitter.DisplayName) </dd>
-        <dt>Assigned User: </dt>
-        <dd>@Html.DisplayFor(model => model.Assigned.DisplayName) </dd>
-        <dt>Priority:</dt>
-        <dd>@Html.DisplayFor(model => model.Priority.PriorityLevel)        </dd>
-        <dt>Project: </dt>
-        <dd>@Html.DisplayFor(model => model.Project.ProjectTitle)        </dd>
-        <dt>Ticket Status:</dt>
-        <dd>@Html.DisplayFor(model => model.Status.StatusDescription)        </dd>        
-        <dt>Ticket Type:</dt>
-        <dd>@Html.DisplayFor(model => model.TicketType.TypeDescription)        </dd>
-        <dt>Ticket Description:</dt>
-        <dd>@Html.DisplayFor(model => model.Description)        </dd>
-        <dt>Create Date:</dt>
-        <dd>@Html.DisplayFor(model => model.CreateDate)        </dd>
-        <dt>Update Date:</dt>
-        <dd>@Html.DisplayFor(model => model.UpdatedDate)        </dd>
+    <div class="row">
+        <div class="col-md-4">
+            <dl class="dl-horizontal">
+                <dt>Submitting User: </dt>
+                <dd>@Model.ticket.Submitter.DisplayName </dd>
+                <dt>Assigned User: </dt>
+                <dd>@Model.ticket.Assigned.DisplayName  </dd>
+                <dt>Priority:</dt>
+                <dd>@Model.ticket.Priority.PriorityLevel         </dd>
+                <dt>Project: </dt>
+                <dd>@Model.ticket.Project.ProjectTitle         </dd>
+                <dt>Ticket Status:</dt>
+                <dd>@Model.ticket.Status.StatusDescription       </dd>        
+                <dt>Ticket Type:</dt>
+                <dd>@Model.ticket.TicketType.TypeDescription         </dd>
+                <dt>Ticket Description:</dt>
+                <dd>@Model.ticket.Description         </dd>
+                <dt>Create Date:</dt>
+                <dd>@Model.ticket.CreateDate.ToString("MM/dd/yyyy" )       </dd>
+                <dt>Update Date:</dt>
+                <dd>@Model.ticket.UpdatedDate.ToString("MM/dd/yyyy" )        </dd>
+            </dl>
+            <p>
+                @Html.ActionLink("Edit", "Edit", new { id = Model.ticket.Id }) |
+                @Html.ActionLink("Back to List", "Index")
+            </p>
+        </div>
+        <div class="col-md-8">
+            <h3>Comments</h3>
+            @Html.ActionLink("Create New Comment","CreateTicketComment", new { id = Model.ticket.Id } )
+            @*@Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+            <hr />
+            <table class="table display" id="myTable">
+                <thead>
+                    <tr>
+                        <th> Comment Date</th>
+                        <th> Commenter</th>
+                        <th> Comment</th>
+                        <th></th>
+                    </tr>
+                <tbody>
 
-    </dl>
+                        @foreach (var item in Model.ticketComments )
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(i => item.CreateDate  ) </td>
+                                <td>@Html.DisplayFor(i=> item.Author.DisplayName  )  </td>
+                                <td>@Html.DisplayFor(i=> item.Body)  </td>
+                                <td>@Html.ActionLink("Edit", "EditTicketComment",new { id = item.Id },null )  </td>
+                            </tr>
+                        }
+                </tbody>
+            </table>
+            <hr />
+            <h3>Attachments</h3>
+            @Html.ActionLink("Create An Attachment", "CreateTicketAttachment", new { id = Model.ticket.Id })
+          
+            <hr />
+            <table class="table display" id="myTable">
+                <thead>
+                    <tr>
+                        <th> Comment Date</th>
+                        <th> Commenter</th>
+                        <th> Comment</th>
+                        <th></th>
+                    </tr>
+                <tbody>
+
+                    @foreach (var item in Model.ticketComments)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(i => item.CreateDate) </td>
+                            <td>@Html.DisplayFor(i => item.Author.DisplayName)  </td>
+                            <td>@Html.DisplayFor(i => item.Body)  </td>
+                            <td>@Html.ActionLink("Edit", "EditTicketComment", new { id = item.Id }, null)  </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+

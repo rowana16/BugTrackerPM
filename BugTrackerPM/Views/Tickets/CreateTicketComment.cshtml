@@ -1,0 +1,35 @@
+﻿@using BugTrackerPM.Models
+@model TicketDetailsViewModel
+
+@{
+    ViewBag.Title = "CreateTicketComment";
+}
+
+<h2>Create Ticket Comment</h2>
+
+<h3>Project: @Model.ticket.Project.ProjectTitle</h3>
+<h4>Ticket: @Model.ticket.Description </h4>
+<hr />
+<div class="container">
+    <div class="col-md-2"></div>
+    <div class="col-md-10">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Comment:</label>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea name="body" rows="15" cols="60"></textarea>                        
+                    </div>
+                </div>          
+            </div>
+            <input type="submit" class="btn btn-primary" value="Create Comment" /> 
+        }
+     </div>
+    @Html.ActionLink("Back to Ticket", "Details", "Tickets", new { id = Model.ticket.Id },null)
+</div>
+

@@ -90,20 +90,29 @@ namespace BugTrackerPM.Models
         // GET: Tickets/Details/5
         public ActionResult Details(int? id)
         {
+            TicketDetailsViewModel ViewModel = new TicketDetailsViewModel();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Ticket ticket = db.Ticket.Find(id);
+            var ticket = db.Ticket.Find(id);
+            ViewModel.ticket = ticket;
+            ViewModel.ticketComments = ticket.TicketComments;
+
+
             if (ticket == null)
             {
                 return HttpNotFound();
             }
-            return View(ticket);
+            
+            
+
+            return View(ViewModel);
             
         }
 
-        /* ==================================================  Create  ===================================================== */
+        /* ==================================================  Create Ticket Get ===================================================== */
 
         // GET: Tickets/Create
         public ActionResult Create()
@@ -113,6 +122,9 @@ namespace BugTrackerPM.Models
             ViewBag.TicketTypeId = new SelectList(db.TicketType, "Id", "TypeDescription");
             return View();
         }
+
+
+        /* ==================================================  Create Ticket Post ===================================================== */
 
         // POST: Tickets/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -143,6 +155,7 @@ namespace BugTrackerPM.Models
             ViewBag.TicketTypeId = new SelectList(db.TicketType, "Id", "TypeDescription", ticket.TicketTypeId);
             return View(ticket);
         }
+        /* ================================================== Edit Tickets Get ===================================================== */
 
         // GET: Tickets/Edit/5
         [Authorize(Roles = "Admin, ProjectManager, Developer")]
@@ -159,8 +172,9 @@ namespace BugTrackerPM.Models
             }
             string currentUserId = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.Find(currentUserId);
+            UserRolesHelper helper = new UserRolesHelper(db);
 
-            if (!(ticket.AssignedId == currentUserId || ticket.Project.Users.Contains(currentUser) || ticket.SubmitterId == currentUserId))
+            if (!(ticket.AssignedId == currentUserId || ticket.Project.Users.Contains(currentUser) || ticket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(),"Admin")))
             {
                 System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
                 return RedirectToAction("Index");
@@ -174,6 +188,9 @@ namespace BugTrackerPM.Models
             ViewBag.TicketTypeId = new SelectList(db.TicketType, "Id", "TypeDescription", ticket.TicketTypeId);
             return View(ticket);
         }
+
+
+        /* ==================================================  Edit Tickets Post ===================================================== */
 
         // POST: Tickets/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -201,6 +218,7 @@ namespace BugTrackerPM.Models
             return View(ticket);
         }
 
+        /* ==================================================  Delete Ticket Get ===================================================== */
         // GET: Tickets/Delete/5
         public ActionResult Delete(int? id)
         {
@@ -215,7 +233,7 @@ namespace BugTrackerPM.Models
             }
             return View(ticket);
         }
-
+        /* ==================================================  Delete Ticket Post ===================================================== */
         // POST: Tickets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -226,6 +244,108 @@ namespace BugTrackerPM.Models
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        /* ==================================================  Ticket Comment ===================================================== */
+        /* ==================================================  Ticket Comment ===================================================== */
+        /* ==================================================  Ticket Comment ===================================================== */
+
+
+        /* ==================================================  Create TicketComment Get ===================================================== */
+
+        public ActionResult CreateTicketComment (int id)
+        {
+
+            Ticket currentTicket = db.Ticket.Find(id);
+            TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
+            viewModel.ticket = currentTicket;
+            string currentUserId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Find(currentUserId);
+            UserRolesHelper helper = new UserRolesHelper(db);
+           
+
+            if (!(currentTicket.AssignedId == currentUserId  || currentTicket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
+            {
+                System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
+                return RedirectToAction("Edit",new { id = id } );
+
+            }
+
+
+            return View(viewModel);
+
+        }
+
+        /* ==================================================  Create TicketComment Post ===================================================== */
+
+        [HttpPost]
+        public ActionResult CreateTicketComment (string body, int id)
+        {
+            TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
+            Ticket currentTicket = db.Ticket.Find(id);
+            TicketComment submittedComment = new TicketComment();
+            submittedComment.Body = body;
+            submittedComment.CreateDate = DateTime.Now;
+            submittedComment.UpdateDate = DateTime.Now;
+            submittedComment.TicketId = id;
+            submittedComment.AuthorId = User.Identity.GetUserId();
+
+            if (ModelState.IsValid)
+            {
+                db.TicketComment.Add(submittedComment);
+                db.SaveChanges();
+            }
+
+            viewModel.ticket = currentTicket;
+            return RedirectToAction("Details",new { id = currentTicket.Id });
+        }
+
+        /* ==================================================  Edit TicketComment Get ===================================================== */
+
+        public ActionResult EditTicketComment (int id)
+        {
+            TicketCommentViewModel viewModel = new TicketCommentViewModel();
+            TicketComment currentComment = db.TicketComment.Find(id);
+            Ticket parentTicket = db.Ticket.Find(currentComment.TicketId);
+
+            viewModel.ticket = parentTicket;
+            viewModel.comment = currentComment;
+
+            string currentUserId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Find(currentUserId);
+            UserRolesHelper helper = new UserRolesHelper(db);
+            Ticket currentTicket = parentTicket;
+
+            if (!(currentTicket.AssignedId == currentUserId || currentTicket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
+            {
+                System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
+                return RedirectToAction("Edit", new { id = id });
+
+            }
+
+            return View(viewModel);
+        }
+
+        /* ==================================================  Edit TicketComment Post ===================================================== */
+
+        [HttpPost]
+        public ActionResult EditTicketComment (int id, string body, int ticketId)
+        {
+            TicketCommentViewModel viewModel = new TicketCommentViewModel();
+            TicketComment currentComment = db.TicketComment.Find(id);
+            currentComment.Body = body;
+
+            if (ModelState.IsValid)
+            {
+                db.Entry(currentComment).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Details",new { id = ticketId });
+            }
+           
+            return View(viewModel);
+        }
+
+        /* ==================================================  Garbage Collection ===================================================== */
+
 
         protected override void Dispose(bool disposing)
         {
