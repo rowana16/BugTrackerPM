@@ -100,6 +100,7 @@ namespace BugTrackerPM.Models
                 return HttpNotFound();
             }
             return View(ticket);
+            
         }
 
         /* ==================================================  Create  ===================================================== */
@@ -144,6 +145,7 @@ namespace BugTrackerPM.Models
         }
 
         // GET: Tickets/Edit/5
+        [Authorize(Roles = "Admin, ProjectManager, Developer")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -154,6 +156,15 @@ namespace BugTrackerPM.Models
             if (ticket == null)
             {
                 return HttpNotFound();
+            }
+            string currentUserId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Find(currentUserId);
+
+            if (!(ticket.AssignedId == currentUserId || ticket.Project.Users.Contains(currentUser) || ticket.SubmitterId == currentUserId))
+            {
+                System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
+                return RedirectToAction("Index");
+
             }
             ViewBag.AssignedId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedId);
             ViewBag.PriorityId = new SelectList(db.Prioritiy, "Id", "PriorityLevel", ticket.PriorityId);
