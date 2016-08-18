@@ -86,6 +86,8 @@ namespace BugTrackerPM.Migrations
             userId = userManager.FindByEmail("jtwichell@coderfoundry.com").Id;
             userManager.AddToRole(userId, "Projectmanager");
 
+
+            //==============================  Seed Fixed Tables  ===========================================================
             context.Status.AddOrUpdate( x => x.Id,
                 new Status() { Id = 1, StatusDescription = "Created" },
                 new Status() { Id = 2, StatusDescription = "Assigned" },
@@ -111,6 +113,8 @@ namespace BugTrackerPM.Migrations
                 new Priority() { Id = 3, PriorityLevel = "High" },
                 new Priority() { Id = 4, PriorityLevel = "Urgent" }
             );
+
+            //==============================  Seed Projects and Tickets  ===========================================================
             DateTime Date1 = new DateTime(2016, 8, 1);
             context.Projects.AddOrUpdate(x => x.Id,
                 new Project() { Id = 1, ProjectTitle = "Pyramids of Giza", CreateDate = Date1, UpdateDate = Date1 },

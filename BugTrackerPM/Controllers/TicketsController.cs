@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -24,14 +25,14 @@ namespace BugTrackerPM.Models
 
             var currentUserId = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.Find(currentUserId);
-           
-            if (helper.IsUserInRole(currentUserId, "Admin")){
+
+            if (helper.IsUserInRole(currentUserId, "Admin")) {
                 var tickets = db.Ticket.Include(t => t.Assigned).Include(t => t.Priority).Include(t => t.Project).Include(t => t.Status).Include(t => t.Submitter).Include(t => t.TicketType);
                 ViewModel.Ticket = tickets.ToList();
                 return View(ViewModel);
             }
 
-            if (helper.IsUserInRole(currentUserId,"ProjectManager"))
+            if (helper.IsUserInRole(currentUserId, "ProjectManager"))
             {
                 var projects = currentUser.Projects;
                 var tickets = new List<Ticket>();
@@ -43,14 +44,14 @@ namespace BugTrackerPM.Models
                         tickets.Add(t);
                     }
                 }
-               
+
                 ViewModel.Ticket = tickets;
                 return View(ViewModel);
             }
 
             if (helper.IsUserInRole(currentUserId, "Developer"))
             {
-                
+
                 var projectTickets = new List<Ticket>();
                 var assignedTickets = new List<Ticket>();
 
@@ -60,9 +61,9 @@ namespace BugTrackerPM.Models
                     foreach (Ticket t in p.Tickets)
                     {
                         projectTickets.Add(t);
-                    }  
+                    }
                 }
-                
+
                 assignedTickets = db.Ticket.Where(i => i.AssignedId == currentUserId).ToList();
                 IEnumerable<Ticket> tickets = projectTickets.Union(assignedTickets);
 
@@ -70,7 +71,7 @@ namespace BugTrackerPM.Models
                 //var projectTickets = from t in db.Ticket
                 //                     join p in assignedProjects on t.ProjectId equals p.Id                                     
                 //                        select t;
-               
+
                 ViewModel.Ticket = tickets;
                 return View(ViewModel);
             }
@@ -88,7 +89,7 @@ namespace BugTrackerPM.Models
 
         /* ==================================================  Details  ===================================================== */
         // GET: Tickets/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int id)
         {
             TicketDetailsViewModel ViewModel = new TicketDetailsViewModel();
 
@@ -99,17 +100,17 @@ namespace BugTrackerPM.Models
             var ticket = db.Ticket.Find(id);
             ViewModel.ticket = ticket;
             ViewModel.ticketComments = ticket.TicketComments;
-
+            ViewModel.ticketAttachments = ticket.TicketAttachments;
 
             if (ticket == null)
             {
                 return HttpNotFound();
             }
-            
-            
+
+
 
             return View(ViewModel);
-            
+
         }
 
         /* ==================================================  Create Ticket Get ===================================================== */
@@ -117,7 +118,7 @@ namespace BugTrackerPM.Models
         // GET: Tickets/Create
         public ActionResult Create()
         {
-            
+
             ViewBag.PriorityId = new SelectList(db.Prioritiy, "Id", "PriorityLevel");
             ViewBag.TicketTypeId = new SelectList(db.TicketType, "Id", "TypeDescription");
             return View();
@@ -133,7 +134,7 @@ namespace BugTrackerPM.Models
         [ValidateAntiForgeryToken]
         public ActionResult Create(int PriorityId, int TicketTypeId, string Description, Ticket ticket)
         {
-            
+
             ticket.SubmitterId = User.Identity.GetUserId();
             ticket.AssignedId = "b91bfb05-08ea-494c-92cb-7da8ad4085b3"; //Admin User Id
             ticket.ProjectId = 1;
@@ -150,8 +151,8 @@ namespace BugTrackerPM.Models
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            
-            ViewBag.PriorityId = new SelectList(db.Prioritiy, "Id", "PriorityLevel", ticket.PriorityId);           
+
+            ViewBag.PriorityId = new SelectList(db.Prioritiy, "Id", "PriorityLevel", ticket.PriorityId);
             ViewBag.TicketTypeId = new SelectList(db.TicketType, "Id", "TypeDescription", ticket.TicketTypeId);
             return View(ticket);
         }
@@ -174,7 +175,7 @@ namespace BugTrackerPM.Models
             ApplicationUser currentUser = db.Users.Find(currentUserId);
             UserRolesHelper helper = new UserRolesHelper(db);
 
-            if (!(ticket.AssignedId == currentUserId || ticket.Project.Users.Contains(currentUser) || ticket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(),"Admin")))
+            if (!(ticket.AssignedId == currentUserId || ticket.Project.Users.Contains(currentUser) || ticket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
             {
                 System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
                 return RedirectToAction("Index");
@@ -199,7 +200,7 @@ namespace BugTrackerPM.Models
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,SubmitterId,AssignedId,ProjectId,PriorityId,TicketTypeId,StatusId,Description,CreateDate,UpdatedDate")] Ticket ticket)
         {
-            
+
             //ticket.CreateDate = DateTime.Now;
             ticket.UpdatedDate = DateTime.Now;
 
@@ -252,21 +253,21 @@ namespace BugTrackerPM.Models
 
         /* ==================================================  Create TicketComment Get ===================================================== */
 
-        public ActionResult CreateTicketComment (int id)
+        public ActionResult CreateTicketComment(int id)
         {
 
             Ticket currentTicket = db.Ticket.Find(id);
-            TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
+            TicketCommentViewModel viewModel = new TicketCommentViewModel();
             viewModel.ticket = currentTicket;
             string currentUserId = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.Find(currentUserId);
             UserRolesHelper helper = new UserRolesHelper(db);
-           
 
-            if (!(currentTicket.AssignedId == currentUserId  || currentTicket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
+
+            if (!(currentTicket.AssignedId == currentUserId || currentTicket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
             {
                 System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
-                return RedirectToAction("Edit",new { id = id } );
+                return RedirectToAction("Details", new { id = id });
 
             }
 
@@ -278,9 +279,9 @@ namespace BugTrackerPM.Models
         /* ==================================================  Create TicketComment Post ===================================================== */
 
         [HttpPost]
-        public ActionResult CreateTicketComment (string body, int id)
+        public ActionResult CreateTicketComment(string body, int id)
         {
-            TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
+            TicketCommentViewModel viewModel = new TicketCommentViewModel();
             Ticket currentTicket = db.Ticket.Find(id);
             TicketComment submittedComment = new TicketComment();
             submittedComment.Body = body;
@@ -296,12 +297,12 @@ namespace BugTrackerPM.Models
             }
 
             viewModel.ticket = currentTicket;
-            return RedirectToAction("Details",new { id = currentTicket.Id });
+            return RedirectToAction("Details", new { id = currentTicket.Id });
         }
 
         /* ==================================================  Edit TicketComment Get ===================================================== */
 
-        public ActionResult EditTicketComment (int id)
+        public ActionResult EditTicketComment(int id)
         {
             TicketCommentViewModel viewModel = new TicketCommentViewModel();
             TicketComment currentComment = db.TicketComment.Find(id);
@@ -318,7 +319,7 @@ namespace BugTrackerPM.Models
             if (!(currentTicket.AssignedId == currentUserId || currentTicket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
             {
                 System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
-                return RedirectToAction("Edit", new { id = id });
+                return RedirectToAction("Details", new { id = id });
 
             }
 
@@ -328,7 +329,7 @@ namespace BugTrackerPM.Models
         /* ==================================================  Edit TicketComment Post ===================================================== */
 
         [HttpPost]
-        public ActionResult EditTicketComment (int id, string body, int ticketId)
+        public ActionResult EditTicketComment(int id, string body, int ticketId)
         {
             TicketCommentViewModel viewModel = new TicketCommentViewModel();
             TicketComment currentComment = db.TicketComment.Find(id);
@@ -338,11 +339,110 @@ namespace BugTrackerPM.Models
             {
                 db.Entry(currentComment).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Details",new { id = ticketId });
+                return RedirectToAction("Details", new { id = ticketId });
             }
-           
+
             return View(viewModel);
         }
+
+        /* ==================================================  Ticket Attachment ===================================================== */
+        /* ==================================================  Ticket Attachment ===================================================== */
+        /* ==================================================  Ticket Attachment ===================================================== */
+
+
+        /* ==================================================  Create TicketAttachment Get ===================================================== */
+
+        public ActionResult CreateTicketAttachment(int id)
+        {
+            Ticket currentTicket = db.Ticket.Find(id);
+            TicketAttachment currentAttachment = new TicketAttachment();
+            TicketAttachmentViewModel viewModel = new TicketAttachmentViewModel();
+            viewModel.attachment = currentAttachment;
+            viewModel.ticket = currentTicket;
+
+            string currentUserId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Find(currentUserId);
+            UserRolesHelper helper = new UserRolesHelper(db);
+
+
+            if (!(currentTicket.AssignedId == currentUserId || currentTicket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
+            {
+                System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
+                return RedirectToAction("Details", new { id = id });
+
+            }
+
+            return View(viewModel);
+        }
+
+        /* ==================================================  Create TicketAttachment Post ===================================================== */
+
+        [HttpPost]
+        public ActionResult CreateTicketAttachment(int id, HttpPostedFileBase URL, string body )
+        {
+            TicketAttachment currentAttachment = new TicketAttachment();
+            
+
+            if (URL != null && URL.ContentLength >0 )
+            {
+                var extension = Path.GetExtension(URL.FileName).ToLower();
+                if (extension != ".png" && extension != ".jpg" && extension != ".gif" && extension != ".jpeg" && extension != ".bmp" && extension != ".doc" && extension != ".docx" && extension != ".pdf" && extension != ".xls" && extension != ".xlsx" && extension != ".xslm" && extension != ".ppt" && extension != ".pptx" && extension != ".txt")
+                { ModelState.AddModelError("image", "Invalid Format."); }
+            }
+
+            if (ModelState.IsValid)
+            {
+                currentAttachment.AuthorId = User.Identity.GetUserId();
+                currentAttachment.TicketId = id;
+                currentAttachment.CreateDate = DateTime.Now;
+                currentAttachment.UpdateDate = DateTime.Now;
+                currentAttachment.AttachementDescription = body;
+                if(URL != null)
+                {
+                    var filePath = "/Uploads/";
+                    var absPath = Server.MapPath("~" + filePath);
+                    currentAttachment.AttachmentURL = filePath + URL.FileName;
+                    URL.SaveAs(Path.Combine(absPath, URL.FileName));
+                }
+
+                db.TicketAttachment.Add(currentAttachment);
+                db.SaveChanges();
+                return RedirectToAction("Details", new { id = currentAttachment.TicketId });
+            }
+
+            TicketAttachmentViewModel viewModel = new TicketAttachmentViewModel();
+            viewModel.attachment = currentAttachment;
+            Ticket currentTicket = db.Ticket.Find(currentAttachment.TicketId);
+            viewModel.ticket = currentTicket;
+
+            return View(viewModel);
+        }
+
+        /* ==================================================  Edit TicketAttachment Get ===================================================== */
+
+        public ActionResult EditTicketAttachment(int id)
+        {
+            
+            TicketAttachmentViewModel viewModel = new TicketAttachmentViewModel();
+            viewModel.attachment = db.TicketAttachment.Find(id);
+            viewModel.ticket = viewModel.attachment.Ticket;
+            Ticket currentTicket = viewModel.ticket;
+
+            string currentUserId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Find(currentUserId);
+            UserRolesHelper helper = new UserRolesHelper(db);
+
+
+            if (!(currentTicket.AssignedId == currentUserId || currentTicket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
+            {
+                System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
+                return RedirectToAction("Details", new { id = id });
+
+            }
+
+            return View(viewModel);
+        }
+
 
         /* ==================================================  Garbage Collection ===================================================== */
 

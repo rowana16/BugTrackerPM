@@ -9,6 +9,7 @@ namespace BugTrackerPM.Models
     {
         public Ticket ticket { get; set; }
         public ICollection<TicketComment> ticketComments { get; set; }
+        public ICollection<TicketAttachment> ticketAttachments { get; set; }
 
     }
 
@@ -17,4 +18,13 @@ namespace BugTrackerPM.Models
         public TicketComment comment { get; set; }
         public Ticket ticket { get; set; }
     }
+
+    public class TicketAttachmentViewModel
+    {
+        public TicketAttachment attachment { get; set; }
+        public Ticket ticket { get; set; }
+    }
+
+
+
 }

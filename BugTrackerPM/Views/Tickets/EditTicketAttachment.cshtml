@@ -1,0 +1,42 @@
+﻿@using BugTrackerPM.Models
+@model TicketAttachmentViewModel
+@{
+    ViewBag.Title = "EditTicketAttachment";
+}
+
+<h2>EditTicketAttachment</h2>
+
+<h3>Project: @Model.ticket.Project.ProjectTitle</h3>
+<h4>Ticket: @Model.ticket.Description </h4>
+<hr />
+<div class="container">
+    <div class="col-md-2"></div>
+    <div class="col-md-10">
+        @using (Html.BeginForm("EditTicketAttachment", "Tickets", FormMethod.Post, new { enctype = "Multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("id", new { id = Model.ticket.Id })
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Attachment URL:</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input type="file" class="form-control" id="fileUpload" name="URL">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Attachment Description:</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="Body" name="Body" value="@Model.attachment.AttachementDescription">
+                    </div>
+                </div>
+
+            </div>
+            <input type="submit" class="btn btn-primary" value="Update Attachment" />
+        }
+    </div>
+    @Html.ActionLink("Back to Ticket", "Details", "Tickets", new { id = Model.ticket.Id }, null)
+</div>

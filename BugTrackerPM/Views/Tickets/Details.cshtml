@@ -37,12 +37,13 @@
                 @Html.ActionLink("Back to List", "Index")
             </p>
         </div>
+    <!-- ====================== Ticket Comment ===================================================-->
         <div class="col-md-8">
             <h3>Comments</h3>
             @Html.ActionLink("Create New Comment","CreateTicketComment", new { id = Model.ticket.Id } )
-            @*@Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+            
             <hr />
-            <table class="table display" id="myTable">
+            <table class="table display myTable">
                 <thead>
                     <tr>
                         <th> Comment Date</th>
@@ -66,25 +67,29 @@
             <hr />
             <h3>Attachments</h3>
             @Html.ActionLink("Create An Attachment", "CreateTicketAttachment", new { id = Model.ticket.Id })
-          
+
+
+    <!-- ====================== Ticket Attachment ===================================================-->
             <hr />
-            <table class="table display" id="myTable">
+            <table class="table display myTable" >
                 <thead>
                     <tr>
-                        <th> Comment Date</th>
-                        <th> Commenter</th>
-                        <th> Comment</th>
+                        <th> Attchment Image</th>
+                        <th> Attachment Date</th>
+                        <th> Contributor</th>
+                        <th> Description</th>
                         <th></th>
                     </tr>
                 <tbody>
 
-                    @foreach (var item in Model.ticketComments)
+                    @foreach (var item in Model.ticketAttachments )
                     {
                         <tr>
-                            <td>@Html.DisplayFor(i => item.CreateDate) </td>
-                            <td>@Html.DisplayFor(i => item.Author.DisplayName)  </td>
-                            <td>@Html.DisplayFor(i => item.Body)  </td>
-                            <td>@Html.ActionLink("Edit", "EditTicketComment", new { id = item.Id }, null)  </td>
+                            <td><img class="img-responsive" src="@item.AttachmentURL" alt="Attachment Image" height="50" width="50"</td>
+                            <td>@Html.DisplayFor(i => item.CreateDate ) </td>
+                            <td>@Html.DisplayFor(i => item.Author.DisplayName )  </td>
+                            <td>@Html.DisplayFor(i => item.AttachementDescription )    </td>
+                            <td>@Html.ActionLink("Edit", "EditTicketAttachment", new { id = item.Id }, null)  </td>
                         </tr>
                     }
                 </tbody>
