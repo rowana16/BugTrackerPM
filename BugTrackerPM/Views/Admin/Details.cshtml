@@ -1,0 +1,35 @@
+﻿@using BugTrackerPM.Models
+@model AdminIndexViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>User Details</h2>
+<h4>Current User: @(Model.user.DisplayName)   </h4>
+
+<div>
+   
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <dl class="dl-horizontal">
+                <dt>First Name: </dt>
+                <dd>@Model.user.FirstName </dd>
+                <dt>Last Name: </dt>
+                <dd>@Model.user.LastName</dd>
+                <dt>Email: </dt>
+                <dd>@Model.user.Email</dd>
+                <dt>Projects: </dt>
+                @foreach (Project userProject in Model.user.Projects)
+                {
+                    <dd>@userProject.ProjectTitle </dd>
+                }
+            </dl>
+        </div>
+    </div>
+    <div class="row">
+        <hr />
+        @Html.ActionLink("Return to Index", "Index")
+    </div>
+</div>

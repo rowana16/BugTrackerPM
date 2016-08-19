@@ -1,10 +1,11 @@
 ﻿@using BugTrackerPM.Models
 @model AdminUserViewModel
-@{ 
+@{
     ViewBag.Title = "AssignUserRoles";
 }
 
-<h2>Manager User Roles</h2>
+<h2>Edit User Profile</h2>
+<h4>Current User: @Model.name</h4>
 
 <div class="container">
     <div class="row">
@@ -13,8 +14,8 @@
             @using (Html.BeginForm("RemoveRole", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
                 @Html.AntiForgeryToken()
-                 @Html.Hidden("id", Model.id)
-                 @Html.ListBox("SelectedCurrentRoles", Model.roles, new { style = "width:250px; color: steelblue;" })
+                @Html.Hidden("id", Model.id)
+                @Html.ListBox("SelectedCurrentRoles", Model.roles, new { style = "width:250px; color: steelblue; height: 160px" })
                 <div class="col-md-10">
                     <input type="submit" class="btn btn-primary" value="Remove Highlighted Roles" />
                 </div>
@@ -25,16 +26,39 @@
             @using (Html.BeginForm("AddRole", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
                 @Html.AntiForgeryToken()
-                @Html.Hidden("id",Model.id)
-                @Html.ListBox("SelectedAbsentRoles", Model.absentRoles, new { style = "width:250px; color: steelblue;" })
+                @Html.Hidden("id", Model.id)
+                @Html.ListBox("SelectedAbsentRoles", Model.absentRoles, new { style = "width:250px; color: steelblue; height: 160px;" })
                 <div class="col-md-10">
                     <input type="submit" class="btn btn-primary" value="Add Highlighted Roles" />
                 </div>
             }
 
         </div>
-        
     </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Update User Info</h3>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("id", Model.id)
+                <div class="row">
+                    <h4>User Name:</h4>
+                    <input type="text" name="name" value="@Model.name" style="width:250px; color: steelblue" />
+                </div>
+
+                <div class="row">
+                    <h4>User Email:</h4>
+                    <input type="text" name="email" value="@Model.userEdit.Email" style="width:250px; color: steelblue"/>
+                </div>
+                <div class="row">
+                    <input type="submit" class="btn btn-primary" value="Change User Info" style="margin-top: 5px" />
+                </div>
+            }
+        </div>
+    </div>
+
+
     <div class="row">
         <hr />
         @Html.ActionLink("Return to Index", "Index")
@@ -45,7 +69,7 @@
 
 
 
-<hr />
+
 
 
 

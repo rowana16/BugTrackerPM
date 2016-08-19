@@ -57,3 +57,7 @@ td a{
 select {
     color:navy;
 }
+
+.dataTables_info{
+    color:white !important;
+}

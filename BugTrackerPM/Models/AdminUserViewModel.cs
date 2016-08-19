@@ -12,6 +12,7 @@ namespace BugTrackerPM.Models
 
         public string id { get; set; }
         public string name { get; set; }
+        public ApplicationUser userEdit { get; set; }
 
         public MultiSelectList roles { get; set; }
         public MultiSelectList absentRoles { get; set; }
@@ -32,4 +33,18 @@ namespace BugTrackerPM.Models
         public IList<string> names { get; set; }
 
     }
+
+    public class AdminIndexViewModel
+    {
+        public ApplicationUser user { get; set; }
+        public string projectNameList { get; set; }
+        public string roleNameList { get; set; }
+    }
+
+    public class AdminCompositeViewModel
+    {
+        public IEnumerable<AdminIndexViewModel>details { get; set; }
+    }
+
+
 }
