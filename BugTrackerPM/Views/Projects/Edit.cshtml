@@ -4,12 +4,13 @@
 @{
     ViewBag.Title = "Edit";
 }
+<img src="~/Content/Images/Fireworks.jpeg" style="float: right; width:250px; height: 175px; margin-bottom: 15px; margin-right: 50px; border-radius: 25px;" />
 
-<h2>Manage Project: Assigned Resources</h2>
+<h2 style="margin-top: 70px">Manage Project: @Model.project.ProjectTitle</h2>
 
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6" style="margin-top: 75px;">
             <h3>Currently Assigned Resources</h3>
             @using (Html.BeginForm("RemoveAssignment", "Projects", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {

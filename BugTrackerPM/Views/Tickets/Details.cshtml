@@ -5,31 +5,33 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<img src="~/Content/Images/Mosquito.jpeg" style="float: right; width:250px; height: 175px; margin-bottom: 15px; margin-right: 50px; border-radius: 25px;" />
+
+<h2 style="margin-top:70px">Details</h2>
 
 <div>
     <h4>Ticket</h4>
     <hr />
-    <div class="row">
+    <div class="row" style="margin-top:45px">
         <div class="col-md-4">
             <dl class="dl-horizontal">
-                <dt>Submitting User: </dt>
+                <dt><label>Submitting User:</label></dt>
                 <dd>@Model.ticket.Submitter.DisplayName </dd>
-                <dt>Assigned User: </dt>
+                <dt><label>Assigned User:</label></dt>
                 <dd>@Model.ticket.Assigned.DisplayName  </dd>
-                <dt>Priority:</dt>
+                <dt><label>Ticket Priority:</label></dt>
                 <dd>@Model.ticket.Priority.PriorityLevel         </dd>
-                <dt>Project: </dt>
+                <dt><label>Project:</label></dt>
                 <dd>@Model.ticket.Project.ProjectTitle         </dd>
-                <dt>Ticket Status:</dt>
+                <dt><label>Ticket Status:</label></dt>
                 <dd>@Model.ticket.Status.StatusDescription       </dd>        
-                <dt>Ticket Type:</dt>
+                <dt><label>Ticket Type:</label></dt>
                 <dd>@Model.ticket.TicketType.TypeDescription         </dd>
-                <dt>Ticket Description:</dt>
+                <dt><label>Ticket Description:</label></dt>
                 <dd>@Model.ticket.Description         </dd>
-                <dt>Create Date:</dt>
+                <dt><label>Create Date:</label></dt>
                 <dd>@Model.ticket.CreateDate.ToString("MM/dd/yyyy" )       </dd>
-                <dt>Update Date:</dt>
+                <dt><label>Update Date:</label></dt>
                 <dd>@Model.ticket.UpdatedDate.ToString("MM/dd/yyyy" )        </dd>
             </dl>
             <p>
@@ -85,7 +87,7 @@
                     @foreach (var item in Model.ticketAttachments )
                     {
                         <tr>
-                            <td><img class="img-responsive" src="@item.AttachmentURL" alt="Attachment Image" height="50" width="50"</td>
+                            <td><img class="img-responsive" src="@item.AttachmentURL" alt="Attachment Image" height="50" width="50" /></td>
                             <td>@Html.DisplayFor(i => item.CreateDate ) </td>
                             <td>@Html.DisplayFor(i => item.Author.DisplayName )  </td>
                             <td>@Html.DisplayFor(i => item.AttachementDescription )    </td>

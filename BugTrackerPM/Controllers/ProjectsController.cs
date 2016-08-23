@@ -297,7 +297,7 @@ namespace BugTrackerPM.Models
 
         /*========================================== Delete Functions ======================================================== */
         // GET: Projects/Delete/5
-        [Authorize(Roles = "Admin")]
+        
         public ActionResult Delete(int? id)
         {
             if (id == null)

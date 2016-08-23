@@ -61,3 +61,8 @@ select {
 .dataTables_info{
     color:white !important;
 }
+
+.btn {
+    border-radius: 25px;
+}
+

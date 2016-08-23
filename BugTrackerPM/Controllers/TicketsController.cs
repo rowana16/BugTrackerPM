@@ -29,6 +29,7 @@ namespace BugTrackerPM.Models
             if (helper.IsUserInRole(currentUserId, "Admin")) {
                 var tickets = db.Ticket.Include(t => t.Assigned).Include(t => t.Priority).Include(t => t.Project).Include(t => t.Status).Include(t => t.Submitter).Include(t => t.TicketType);
                 ViewModel.Ticket = tickets.ToList();
+                ViewModel.user = currentUser;
                 return View(ViewModel);
             }
 
@@ -46,6 +47,7 @@ namespace BugTrackerPM.Models
                 }
 
                 ViewModel.Ticket = tickets;
+                ViewModel.user = currentUser;
                 return View(ViewModel);
             }
 
