@@ -111,7 +111,7 @@ namespace BugTrackerPM.Models
 
         /* ==============================================  Create Get ===================================*/
         // GET: Projects/Create
-        [Authorize (Roles ="Admin")]
+        [Authorize (Roles = "Admin, ProjectManager")]
         public ActionResult Create()
         {
             //var projects = db.Projects.ToList();
@@ -123,6 +123,7 @@ namespace BugTrackerPM.Models
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, ProjectManager")]
         public ActionResult Create(string ProjectTitle, Project project)
         {
             project.CreateDate = DateTime.Now;
@@ -139,9 +140,9 @@ namespace BugTrackerPM.Models
             return View(project);
         }
 
-/* ================================Edit Action ==============================================*/
+        /* ================================Edit Action ==============================================*/
         // GET: Projects/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Admin, ProjectManager")]
         public ActionResult Edit(int? id)
         {
             string loggedInUserId = User.Identity.GetUserId();
@@ -151,6 +152,7 @@ namespace BugTrackerPM.Models
             }
 
             ProjectEditViewModel EditViewModel = new ProjectEditViewModel();
+            UserRolesHelper helper = new UserRolesHelper(db);
 
             //////////// Get Project and All Users //////////////////////
             var allUsers = db.Users.ToList();
@@ -158,7 +160,7 @@ namespace BugTrackerPM.Models
 
             foreach(ApplicationUser checkUser in db.Projects.Find(id).Users)
             {
-                if(checkUser.Id == loggedInUserId)
+                if(checkUser.Id == loggedInUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin"))
                 {
                     var assignedUsers = EditViewModel.project.Users;
 
@@ -297,7 +299,7 @@ namespace BugTrackerPM.Models
 
         /*========================================== Delete Functions ======================================================== */
         // GET: Projects/Delete/5
-        
+        [Authorize(Roles = "Admin, ProjectManager")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -314,6 +316,7 @@ namespace BugTrackerPM.Models
 
         // POST: Projects/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin, ProjectManager")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
