@@ -1,15 +1,17 @@
 ﻿@using BugTrackerPM.Models
 @model AdminUserViewModel
 @{
-    ViewBag.Title = "AssignUserRoles";
+    ViewBag.Title = "Assign User Roles";
 }
 
-<h2>Edit User Profile</h2>
+<img src="~/Content/Images/Sunglasses.jpeg" style="float: right; width:250px; height: 175px; margin-bottom: 15px; margin-right: 50px; border-radius: 25px;" />
+
+<h2 style="margin-top: 45px">Edit User Profile</h2>
 <h4>Current User: @Model.name</h4>
 
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6" style="margin-top: 65px;">
             <h3>Currently Assigned Roles</h3>
             @using (Html.BeginForm("RemoveRole", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {

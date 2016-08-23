@@ -42,6 +42,7 @@ namespace BugTrackerPM.Controllers
 
 //  ========================================  Edit Post ============================================
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(string id, string email, string name)
         {
             AdminUserViewModel AdminModel = new AdminUserViewModel();
@@ -112,8 +113,8 @@ namespace BugTrackerPM.Controllers
             return RedirectToAction("Edit", "Admin", new { id = Id });
         }
 
-//  ========================================  User Dashboard ============================================
-        [Authorize]
+        //  ========================================  User Dashboard ============================================
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             AdminCompositeViewModel compositeViewModel = new AdminCompositeViewModel();
@@ -168,7 +169,8 @@ namespace BugTrackerPM.Controllers
             return View(compositeViewModel);
         }
 
-//  ========================================  Details Get ============================================
+        //  ========================================  Details Get ============================================
+        [Authorize(Roles = "Admin")]
         public ActionResult Details(string id)
         {
             AdminIndexViewModel viewModel = new AdminIndexViewModel();
@@ -179,7 +181,8 @@ namespace BugTrackerPM.Controllers
             return View(viewModel);
         }
 
-//  ========================================  Delete Get ============================================
+        //  ========================================  Delete Get ============================================
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(string id)
         {
             AdminIndexViewModel viewModel = new AdminIndexViewModel();
@@ -192,6 +195,7 @@ namespace BugTrackerPM.Controllers
 
 //  ========================================  Delete Post ============================================
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(string Id, ApplicationUser user)
         {
             

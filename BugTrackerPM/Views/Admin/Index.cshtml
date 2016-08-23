@@ -3,7 +3,9 @@
 @{ 
     ViewBag.Title = "Current Users";
 }
+<img src="~/Content/Images/Sunglasses.jpeg" style="float: right; width:250px; height: 175px; margin-bottom: 15px; margin-right: 50px" />
 <h2>User Management Dashboard</h2>
+
 <table class="table display myTable">
     <thead>
         <tr>
@@ -15,13 +17,13 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (AdminIndexViewModel item in Model.details )
+        @foreach (AdminIndexViewModel item in Model.details)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.user.DisplayName ) </td>
-                <td>@Html.DisplayFor(modelItem => item.user.Email )</td>
-                <td>@Html.DisplayFor(modelItem => item.roleNameList )</td>
-                <td>@Html.DisplayFor(modelItem => item.projectNameList )      </td>
+                <td>@Html.DisplayFor(modelItem => item.user.DisplayName) </td>
+                <td>@Html.DisplayFor(modelItem => item.user.Email)</td>
+                <td>@Html.DisplayFor(modelItem => item.roleNameList)</td>
+                <td>@Html.DisplayFor(modelItem => item.projectNameList)      </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.user.Id }) |
                     @Html.ActionLink("Details", "Details", new { id = item.user.Id })

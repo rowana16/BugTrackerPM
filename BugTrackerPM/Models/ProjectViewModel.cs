@@ -20,7 +20,17 @@ namespace BugTrackerPM.Models
 
     public class ProjectIndexViewModel
     {
+        public ProjectIndexViewModel()
+        {
+            this.currentProjects = new List<ProjectListElement>();
+        }
         public ApplicationUser loggedInUser { get; set; }
-        public List<Project> currentProjects { get; set; }
+        public List<ProjectListElement> currentProjects { get; set; }
+    }
+
+    public class ProjectListElement
+    {
+        public Project project { get; set; }
+        public string userList { get; set; }
     }
 }

@@ -13,11 +13,10 @@
 <table class="table myTable">
     <thead>
         <tr>
-            <th>
-                Project Title
-            </th>
+            <th>Project Title</th>
             <th>Create Date</th>
             <th>Update Date</th>
+            <th>Users</th>
 
             <th></th>
         </tr>
@@ -26,20 +25,14 @@
         @foreach (var item in Model.currentProjects)
         {
             <tr>
+                <td>@Html.DisplayFor(modelItem => item.project.ProjectTitle) </td>                
+                <td> @Html.DisplayFor(modelItem => item.project.CreateDate)</td>
+                <td> @Html.DisplayFor(modelItem => item.project.UpdateDate)</td>
+                <td> @Html.DisplayFor(modelItem => item.userList  )</td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProjectTitle)
-
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreateDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UpdateDate)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    @Html.ActionLink("Edit", "Edit", new { id = item.project.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.project.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.project.Id })
                 </td>
             </tr>
         }

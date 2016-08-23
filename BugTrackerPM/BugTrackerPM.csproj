@@ -390,6 +390,9 @@
     <Content Include="Content\DataTables-1.10.12\images\sort_desc.png" />
     <Content Include="Content\DataTables-1.10.12\images\sort_desc_disabled.png" />
     <Content Include="Content\DataTables-1.10.12\swf\flashExport.swf" />
+    <Content Include="Content\Images\Fireworks.jpeg" />
+    <Content Include="Content\Images\Mosquito.jpeg" />
+    <Content Include="Content\Images\Sunglasses.jpeg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

@@ -405,6 +405,7 @@ namespace BugTrackerPM.Models
                     URL.SaveAs(Path.Combine(absPath, URL.FileName));
                 }
 
+                CreateHistory(4, 1, id);
                 db.TicketAttachment.Add(currentAttachment);
                 db.SaveChanges();
                 return RedirectToAction("Details", new { id = currentAttachment.TicketId });
@@ -436,6 +437,7 @@ namespace BugTrackerPM.Models
             if (!(currentTicket.AssignedId == currentUserId || currentTicket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
             {
                 System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
+                CreateHistory(4, 2, currentTicket.Id);
                 return RedirectToAction("Details", new { id = id });
 
             }
@@ -444,8 +446,85 @@ namespace BugTrackerPM.Models
         }
 
 
-        /* ==================================================  Garbage Collection ===================================================== */
+        /* Ticket Changes Overloads :
+         *               Ticket Creation ( Ticket ID Only)
+         *               Ticket Direct Changes (bool assigned, bool type, bool status, bool description, int ticketId)
+         *               Ticket Comment Changes (int historyType, int historySubType, int ticketId)
+         *               */
 
+        public void CreateHistory(int ticketId)
+        {
+            string history = "Ticket Created";
+            if (history != "")
+            {
+                history = history.Substring(0, history.Length - 2);
+                SaveHistory(history, ticketId);
+            }
+
+        }
+
+        public void CreateHistory(bool assigned, bool type, bool status, bool description, int ticketId)
+        {
+            string history = "";
+            if (assigned) { HistoryStringBuilder("Assigned Changed, ", history); }
+            if (type) { HistoryStringBuilder("Type Changed, ", history); }
+            if(status) { HistoryStringBuilder("Status Changed, ", history); }
+            if(description) { HistoryStringBuilder("Description Changed, ", history); }
+
+            if (history != "")
+            {
+                history = history.Substring(0, history.Length - 2);
+                SaveHistory(history, ticketId);
+            }
+
+
+
+        }
+        public void CreateHistory(int historyType, int historySubType, int ticketId)
+        {
+            string history = "";
+            if (historyType == 3)
+            {
+                if (historySubType == 1) { HistoryStringBuilder("Comment Created", history); }
+                if (historySubType == 2) { HistoryStringBuilder("Comment Edited", history); }
+               
+            }
+
+            if (historyType == 4)
+            {
+                if (historySubType == 1) { HistoryStringBuilder("Attachment Created", history); }
+                if (historySubType == 2) { HistoryStringBuilder("Attachment Edited", history); }
+                           
+            }
+
+            if (history != "")
+            {
+                history = history.Substring(0, history.Length - 2);
+                SaveHistory(history, ticketId);
+            }
+        }
+
+        private string HistoryStringBuilder(string newChange, string currentString)
+        {
+            return currentString + newChange;
+
+        }
+
+        private void SaveHistory(string ChangeDescription, int TicketId)
+        {
+            TicketHistory CurrentHistoryItem = new TicketHistory();
+            CurrentHistoryItem.Description = ChangeDescription;
+            CurrentHistoryItem.TicketId = TicketId;
+            CurrentHistoryItem.HistoryCreateDate = DateTime.Now;
+            CurrentHistoryItem.HistoryUpdatedDate = DateTime.Now;
+
+            db.TicketHistory.Add(CurrentHistoryItem);
+            db.SaveChangesAsync();          
+
+        }
+
+    
+        /* ==================================================  Garbage Collection ===================================================== */
 
         protected override void Dispose(bool disposing)
         {

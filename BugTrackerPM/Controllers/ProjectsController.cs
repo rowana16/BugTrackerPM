@@ -25,7 +25,7 @@ namespace BugTrackerPM.Models
             UserRolesHelper helper = new UserRolesHelper(db);
 
             //Get list of User Roles
-            var userId = User.Identity.GetUserId();
+            string userId = User.Identity.GetUserId();
             var user = db.Users.Find(userId);
             var roles = helper.ListUserRoles(userId);
 
@@ -35,25 +35,63 @@ namespace BugTrackerPM.Models
             {
                 if (i == "Admin")
                 {
-                    passModel.currentProjects = db.Projects.ToList();
+                    //Return ALL Projects
+                    passModel = HelperBuildViewModel(db.Projects.ToList());
                     passModel.loggedInUser = user;
                     return View(passModel);
-                    
                 }
             }
 
-
-
             //Otherwise Return just assigned Projects
-            //Build View Model
-            passModel.currentProjects = user.Projects.ToList();
+            //Build View Model            
+            passModel = HelperBuildViewModel(user.Projects.ToList());
             passModel.loggedInUser = user;
 
             return View(passModel);
         }
 
+        /* ==============================================  Get Dashboard Helpers ===================================*/
+        public ProjectIndexViewModel HelperBuildViewModel (List<Project> ProjectList)
+        {
+            ProjectIndexViewModel CreatedModel = new ProjectIndexViewModel();
+            if (ProjectList.Count > 0)
+            {
+                
+                foreach (Project currentProject in ProjectList)
+                {
+                    ProjectListElement individualProject = new ProjectListElement();
+                    individualProject.project = currentProject;
+                    individualProject.userList = HelperUserList(currentProject);
+                    CreatedModel.currentProjects.Add(individualProject);
+                    
+                }
+            }
 
-/* ==============================================  End Dashboard List ===================================*/
+            else
+            {
+                ProjectListElement individualProject = new ProjectListElement();
+                Project BlankProject = new Project();
+
+                individualProject.project = BlankProject;
+                individualProject.userList = "";
+                CreatedModel.currentProjects.Add(individualProject);
+            }
+
+            return CreatedModel;
+        }
+
+        public string HelperUserList (Project project)
+        {
+            string passString = ""; 
+            foreach(ApplicationUser user in project.Users)
+            {
+                passString += user.DisplayName + ", ";
+            }
+            if (passString != "") { passString = passString.Substring(0, passString.Length - 2); }
+            return passString;
+        }
+
+/* ==============================================  Details Get ===================================*/
 
 
         // GET: Projects/Details/5
@@ -71,6 +109,7 @@ namespace BugTrackerPM.Models
             return View(project);
         }
 
+        /* ==============================================  Create Get ===================================*/
         // GET: Projects/Create
         [Authorize (Roles ="Admin")]
         public ActionResult Create()
@@ -79,7 +118,7 @@ namespace BugTrackerPM.Models
             return View();
         }
 
-        // POST: Projects/Create
+        /* ==============================================  Create Post ===================================*/
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -101,11 +140,11 @@ namespace BugTrackerPM.Models
         }
 
 /* ================================Edit Action ==============================================*/
-
         // GET: Projects/Edit/5
-        [Authorize(Roles = "Admin, Project Manager")]
+        [Authorize]
         public ActionResult Edit(int? id)
-        {          
+        {
+            string loggedInUserId = User.Identity.GetUserId();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -116,40 +155,50 @@ namespace BugTrackerPM.Models
             //////////// Get Project and All Users //////////////////////
             var allUsers = db.Users.ToList();
             EditViewModel.project = db.Projects.Find(id);
-            var assignedUsers = EditViewModel.project.Users;
-            //////////// Create List of Absent Users //////////////////////
 
-            var absentUsersList = new List<ApplicationUser>();
-            bool found = false;
-
-            foreach (var filter in allUsers)
+            foreach(ApplicationUser checkUser in db.Projects.Find(id).Users)
             {
-                foreach (var projectUser in EditViewModel.project.Users)
+                if(checkUser.Id == loggedInUserId)
                 {
-                
-                    if(filter == projectUser)
+                    var assignedUsers = EditViewModel.project.Users;
+
+                    //////////// Create List of Absent Users //////////////////////
+
+                    var absentUsersList = new List<ApplicationUser>();
+                    bool found = false;
+
+                    foreach (var filter in allUsers)
                     {
-                        found = true;
-                        break;
+                        foreach (var projectUser in EditViewModel.project.Users)
+                        {
+                
+                            if(filter == projectUser)
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found == false)
+                        {
+                            absentUsersList.Add(filter);
+                        }
+                        found = false;
                     }
-                }
-                if (found == false)
-                {
-                    absentUsersList.Add(filter);
-                }
-                found = false;
-            }
-            EditViewModel.absentUserList = absentUsersList;
+                    EditViewModel.absentUserList = absentUsersList;
 
-            //////////// Create Multi Select Lists //////////////////////
-            EditViewModel.absentUsers = new MultiSelectList(absentUsersList, "Id", "DisplayName");
-            EditViewModel.assignedUsers = new MultiSelectList(assignedUsers, "Id", "DisplayName");
+                    //////////// Create Multi Select Lists //////////////////////
+                    EditViewModel.absentUsers = new MultiSelectList(absentUsersList, "Id", "DisplayName");
+                    EditViewModel.assignedUsers = new MultiSelectList(assignedUsers, "Id", "DisplayName");
 
-            if (EditViewModel.project == null)
-            {
-                return HttpNotFound();
-            }
-            return View(EditViewModel);
+                    if (EditViewModel.project == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    return View(EditViewModel);
+                }
+            } // end user find
+
+            return RedirectToAction("index");
         }
 
       /*========================================== Edit Post Functions ======================================================== */
