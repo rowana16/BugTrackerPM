@@ -18,7 +18,7 @@ namespace BugTrackerPM.Models
         public int Id { get; set; }
         public string SubmitterId { get; set; }
         public string AssignedId { get; set; }
-        public int ProjectId { get; set; }
+        public int? ProjectId { get; set; }
         public int PriorityId { get; set; }
         public int TicketTypeId { get; set; }
         public int StatusId { get; set; }

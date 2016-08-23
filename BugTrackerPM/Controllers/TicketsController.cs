@@ -150,7 +150,7 @@ namespace BugTrackerPM.Models
                 return RedirectToAction("index");
             }
             ticket.SubmitterId = User.Identity.GetUserId();
-            //ticket.AssignedId = "b91bfb05-08ea-494c-92cb-7da8ad4085b3"; //Admin User Id
+            ticket.AssignedId = "eb01b7bf-922a-49db-a36b-cf3b835c0400"; //Admin User Id
             //ticket.ProjectId = 1;
             ticket.PriorityId = PriorityId;
             ticket.TicketTypeId = TicketTypeId;
@@ -173,14 +173,17 @@ namespace BugTrackerPM.Models
         /* ================================================== Edit Tickets Get ===================================================== */
 
         // GET: Tickets/Edit/5
-       
+
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Ticket ticket = db.Ticket.Find(id);
+            Project nullProject = new Project();
+
             if (ticket == null)
             {
                 return HttpNotFound();
@@ -189,12 +192,24 @@ namespace BugTrackerPM.Models
             ApplicationUser currentUser = db.Users.Find(currentUserId);
             UserRolesHelper helper = new UserRolesHelper(db);
 
-            if (!(/*ticket.AssignedId == currentUserId ||*/ ticket.Project.Users.Contains(currentUser)/* || ticket.SubmitterId == currentUserId*/ /*|| helper.IsUserInRole(User.Identity.GetUserId(), "Admin")*/))
+            if (ticket.ProjectId != null)
             {
-                System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
-                return RedirectToAction("Index");
-
+                if (!(/*ticket.AssignedId == currentUserId ||*/ ticket.Project.Users.Contains(currentUser)/* || ticket.SubmitterId == currentUserId*/ || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
+                {
+                    System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
+                    return RedirectToAction("Index");
+                }
             }
+            else
+            {
+                List<Project> projectList = new List<Project>();
+                projectList = db.Projects.ToList();
+
+                nullProject.ProjectTitle = "Unassigned";
+                projectList.Add(nullProject);
+                ViewBag.ProjectTitle = new SelectList(projectList, "Id", "ProjectTitle", ticket.ProjectId);
+            }
+
             List<ApplicationUser> developers = new List<ApplicationUser>();
             foreach (ApplicationUser user in db.Users.ToList())
             {
@@ -221,10 +236,16 @@ namespace BugTrackerPM.Models
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,SubmitterId,AssignedId,ProjectId,PriorityId,TicketTypeId,StatusId,Description,CreateDate,UpdatedDate")] Ticket ticket)
+        public ActionResult Edit(int ProjectTitle, int PriorityId , int StatusId, int TicketTypeId, string AssignedId, string SubmitterId, string Description, DateTime CreateDate, Ticket ticket)
         {
-
-            //ticket.CreateDate = DateTime.Now;
+            ticket.ProjectId = ProjectTitle;
+            ticket.PriorityId = PriorityId;
+            ticket.StatusId = StatusId;
+            ticket.TicketTypeId = TicketTypeId;
+            ticket.AssignedId = AssignedId;
+            ticket.SubmitterId = SubmitterId;
+            ticket.Description = Description;
+            ticket.CreateDate = CreateDate;
             ticket.UpdatedDate = DateTime.Now;
 
             if (ModelState.IsValid)
