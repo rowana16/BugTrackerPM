@@ -67,11 +67,10 @@
                 </tbody>
             </table>
             <hr />
+     <!-- ====================== Ticket Attachment ===================================================-->
+
             <h3>Attachments</h3>
-            @Html.ActionLink("Create An Attachment", "CreateTicketAttachment", new { id = Model.ticket.Id })
-
-
-    <!-- ====================== Ticket Attachment ===================================================-->
+            @Html.ActionLink("Create An Attachment", "CreateTicketAttachment", new { id = Model.ticket.Id })    
             <hr />
             <table class="table display myTable" >
                 <thead>
@@ -96,6 +95,38 @@
                     }
                 </tbody>
             </table>
+
+    <!-- ====================== Ticket History ===================================================-->
+
+            <h3>Ticket History</h3>
+            <hr />
+            <table class="table display myTable">
+                <thead>
+                    <tr>
+                        <th> Attchment Image</th>
+                        <th> Attachment Date</th>
+                        <th> Contributor</th>
+                        <th> Description</th>
+                        <th></th>
+                    </tr>
+                <tbody>
+
+                    @foreach (var item in Model.ticketAttachments)
+                    {
+                        <tr>
+                            <td><img class="img-responsive" src="@item.AttachmentURL" alt="Attachment Image" height="50" width="50" /></td>
+                            <td>@Html.DisplayFor(i => item.CreateDate) </td>
+                            <td>@Html.DisplayFor(i => item.Author.DisplayName)  </td>
+                            <td>@Html.DisplayFor(i => item.AttachementDescription)    </td>
+                            <td>@Html.ActionLink("Edit", "EditTicketAttachment", new { id = item.Id }, null)  </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+
+
 
         </div>
     </div>

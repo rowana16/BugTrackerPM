@@ -9,11 +9,42 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Threading.Tasks;
+using Microsoft.Owin.Security;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace BugTrackerPM.Models
 {
     public class TicketsController : Controller
     {
+       
+        private ApplicationUserManager _userManager;
+
+        public TicketsController()
+        {
+        }
+
+        public TicketsController(ApplicationUserManager userManager)
+        {
+            UserManager = userManager;           
+        }      
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+
+
+
+
         private ApplicationDbContext db = new ApplicationDbContext();
         /* ==================================================  Dashboard  ===================================================== */
         // GET: Tickets
@@ -144,7 +175,7 @@ namespace BugTrackerPM.Models
         public ActionResult Create(int PriorityId, int TicketTypeId, string Description, Ticket ticket)
         {
             UserRolesHelper helper = new UserRolesHelper(db);
-
+            
             if (!helper.IsUserInRole(User.Identity.GetUserId(), "Submitter"))
             {
                 return RedirectToAction("index");
@@ -163,6 +194,7 @@ namespace BugTrackerPM.Models
             {
                 db.Ticket.Add(ticket);
                 db.SaveChanges();
+                CreateHistory(ticket.Id);
                 return RedirectToAction("Index");
             }
 
@@ -236,9 +268,26 @@ namespace BugTrackerPM.Models
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int ProjectTitle, int PriorityId , int StatusId, int TicketTypeId, string AssignedId, string SubmitterId, string Description, DateTime CreateDate, Ticket ticket)
+        public ActionResult Edit(int ProjectId, int PriorityId , int StatusId, int TicketTypeId, string AssignedId, string SubmitterId, string Description, DateTime CreateDate, Ticket ticket)
         {
-            ticket.ProjectId = ProjectTitle;
+            bool bProject = false;
+            bool bAssigned = false;
+            bool bType = false;
+            bool bStatus = false;
+            bool bDescription = false;
+            Ticket origTicket = new Ticket();
+            origTicket =   db.Ticket.Find(ticket.Id);
+
+            if(ProjectId != origTicket.ProjectId) { bProject = true; }
+            if (AssignedId != origTicket.AssignedId) {
+                bAssigned = true;
+                sendEmail(ticket.AssignedId, "Ticket Assignment", "You have been assigned to ticket" + ticket.Id + ": " + ticket.Description);
+                    }
+            if (TicketTypeId != origTicket.TicketTypeId)   { bType = true;  }
+            if (StatusId != origTicket.StatusId) { bStatus = true; }
+            if (Description != origTicket.Description) { bDescription = true; }
+
+            ticket.ProjectId = ProjectId;
             ticket.PriorityId = PriorityId;
             ticket.StatusId = StatusId;
             ticket.TicketTypeId = TicketTypeId;
@@ -250,10 +299,23 @@ namespace BugTrackerPM.Models
 
             if (ModelState.IsValid)
             {
-                db.Entry(ticket).State = EntityState.Modified;
+                db.Entry(origTicket).CurrentValues.SetValues(ticket);
                 db.SaveChanges();
+
+                if (bProject || bAssigned || bType || bStatus || bDescription)
+                {
+                    CreateHistory(bProject, bAssigned, bType, bStatus, bDescription, ticket.Id);
+                    if(!(bAssigned || ticket.AssignedId == User.Identity.GetUserId()))
+                    {
+                        sendEmail(ticket.AssignedId, "Ticket: " + ticket.Id + " Updated", "Your Ticket has been updated by another user.");
+                    }
+
+                }
                 return RedirectToAction("Index");
             }
+
+            
+
             ViewBag.AssignedId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedId);
             ViewBag.PriorityId = new SelectList(db.Prioritiy, "Id", "PriorityLevel", ticket.PriorityId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "ProjectTitle", ticket.ProjectId);
@@ -338,6 +400,10 @@ namespace BugTrackerPM.Models
             {
                 db.TicketComment.Add(submittedComment);
                 db.SaveChanges();
+                if (submittedComment.AuthorId != currentTicket.AssignedId)
+                {
+                    sendEmail(submittedComment.AuthorId, "Ticket Commment Created", "A ticket comment was created by another user for ticket " + id);
+                }
             }
 
             viewModel.ticket = currentTicket;
@@ -425,7 +491,8 @@ namespace BugTrackerPM.Models
         public ActionResult CreateTicketAttachment(int id, HttpPostedFileBase URL, string body )
         {
             TicketAttachment currentAttachment = new TicketAttachment();
-            
+            Ticket currentTicket = new Ticket();
+            currentTicket = db.Ticket.Find(id);
 
             if (URL != null && URL.ContentLength >0 )
             {
@@ -452,12 +519,16 @@ namespace BugTrackerPM.Models
                 CreateHistory(4, 1, id);
                 db.TicketAttachment.Add(currentAttachment);
                 db.SaveChanges();
+                if (currentAttachment.AuthorId != currentTicket.AssignedId)
+                {
+                    sendEmail(currentAttachment.AuthorId, "Ticket Attachment Created", "A ticket attachment was created by another user for ticket " + id);
+                }
                 return RedirectToAction("Details", new { id = currentAttachment.TicketId });
+
             }
 
             TicketAttachmentViewModel viewModel = new TicketAttachmentViewModel();
-            viewModel.attachment = currentAttachment;
-            Ticket currentTicket = db.Ticket.Find(currentAttachment.TicketId);
+            viewModel.attachment = currentAttachment;            
             viewModel.ticket = currentTicket;
 
             return View(viewModel);
@@ -498,28 +569,21 @@ namespace BugTrackerPM.Models
 
         public void CreateHistory(int ticketId)
         {
-            string history = "Ticket Created";
-            if (history != "")
-            {
-                history = history.Substring(0, history.Length - 2);
-                SaveHistory(history, ticketId);
-            }
+            string history = "Ticket Created, ";
+            SaveHistory(HistoryStringBuilder(history), ticketId);
 
         }
 
-        public void CreateHistory(bool assigned, bool type, bool status, bool description, int ticketId)
+        public void CreateHistory(bool project, bool assigned, bool type, bool status, bool description, int ticketId)
         {
             string history = "";
-            if (assigned) { HistoryStringBuilder("Assigned Changed, ", history); }
-            if (type) { HistoryStringBuilder("Type Changed, ", history); }
-            if(status) { HistoryStringBuilder("Status Changed, ", history); }
-            if(description) { HistoryStringBuilder("Description Changed, ", history); }
+            if (project) { history = HistoryStringBuilder("Project Changed, ", history); }
+            if (assigned) {history = HistoryStringBuilder("Assigned Changed, ", history);}
+            if (type) { history = HistoryStringBuilder("Type Changed, ", history); }
+            if(status) { history = HistoryStringBuilder("Status Changed, ", history); }
+            if(description) { history = HistoryStringBuilder("Description Changed, ", history); }
 
-            if (history != "")
-            {
-                history = history.Substring(0, history.Length - 2);
-                SaveHistory(history, ticketId);
-            }
+            SaveHistory(HistoryStringBuilder(history), ticketId);
 
 
 
@@ -529,44 +593,59 @@ namespace BugTrackerPM.Models
             string history = "";
             if (historyType == 3)
             {
-                if (historySubType == 1) { HistoryStringBuilder("Comment Created", history); }
-                if (historySubType == 2) { HistoryStringBuilder("Comment Edited", history); }
+                if (historySubType == 1) { HistoryStringBuilder("Comment Created, ", history); }
+                if (historySubType == 2) { HistoryStringBuilder("Comment Edited, ", history); }
                
             }
 
             if (historyType == 4)
             {
-                if (historySubType == 1) { HistoryStringBuilder("Attachment Created", history); }
-                if (historySubType == 2) { HistoryStringBuilder("Attachment Edited", history); }
+                if (historySubType == 1) { HistoryStringBuilder("Attachment Created, ", history); }
+                if (historySubType == 2) { HistoryStringBuilder("Attachment Edited, ", history); }
                            
             }
+            
+            SaveHistory(HistoryStringBuilder(history), ticketId);
+           
+        }
 
-            if (history != "")
-            {
-                history = history.Substring(0, history.Length - 2);
-                SaveHistory(history, ticketId);
-            }
+        private string HistoryStringBuilder(string currentString)
+        {
+            if (currentString != "") return currentString.Substring(0, currentString.Length - 2);
+            else return currentString;
         }
 
         private string HistoryStringBuilder(string newChange, string currentString)
         {
             return currentString + newChange;
-
         }
+
+
 
         private void SaveHistory(string ChangeDescription, int TicketId)
         {
             TicketHistory CurrentHistoryItem = new TicketHistory();
             CurrentHistoryItem.Description = ChangeDescription;
+            Ticket historyTicket = db.Ticket.Find(TicketId);
+
             CurrentHistoryItem.TicketId = TicketId;
             CurrentHistoryItem.HistoryCreateDate = DateTime.Now;
-            CurrentHistoryItem.HistoryUpdatedDate = DateTime.Now;
+            CurrentHistoryItem.HistoryUpdatedDate = DateTime.Now;            
+            //CurrentHistoryItem.Project = historyTicket.Project;            
+            //CurrentHistoryItem.Ticket = historyTicket;
+            //CurrentHistoryItem.Priority = historyTicket.Priority.PriorityLevel;
+            //CurrentHistoryItem.TicketType = historyTicket.TicketType.TypeDescription;
+            //CurrentHistoryItem.Status = historyTicket.Status.StatusDescription;
 
             db.TicketHistory.Add(CurrentHistoryItem);
-            db.SaveChangesAsync();          
+            db.SaveChanges();          
 
         }
 
+        private void sendEmail(string userId, string subject, string body)
+        {            
+           UserManager.SendEmail(userId, subject, body);
+        }
     
         /* ==================================================  Garbage Collection ===================================================== */
 
