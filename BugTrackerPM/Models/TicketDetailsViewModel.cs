@@ -10,7 +10,7 @@ namespace BugTrackerPM.Models
         public Ticket ticket { get; set; }
         public ICollection<TicketComment> ticketComments { get; set; }
         public ICollection<TicketAttachment> ticketAttachments { get; set; }
-        public ICollection<TicketHistory>ticktHistories { get; set; }
+        public ICollection<TicketHistory>ticketHistories { get; set; }
 
     }
 

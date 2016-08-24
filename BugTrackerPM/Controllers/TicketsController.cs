@@ -135,6 +135,7 @@ namespace BugTrackerPM.Models
             ViewModel.ticket = ticket;
             ViewModel.ticketComments = ticket.TicketComments;
             ViewModel.ticketAttachments = ticket.TicketAttachments;
+            ViewModel.ticketHistories = ticket.TicketHistories;
 
             if (ticket == null)
             {
@@ -400,6 +401,7 @@ namespace BugTrackerPM.Models
             {
                 db.TicketComment.Add(submittedComment);
                 db.SaveChanges();
+                CreateHistory(3, 1, currentTicket.Id);
                 if (submittedComment.AuthorId != currentTicket.AssignedId)
                 {
                     sendEmail(submittedComment.AuthorId, "Ticket Commment Created", "A ticket comment was created by another user for ticket " + id);
@@ -449,6 +451,7 @@ namespace BugTrackerPM.Models
             {
                 db.Entry(currentComment).State = EntityState.Modified;
                 db.SaveChanges();
+                CreateHistory(3, 2, ticketId);
                 return RedirectToAction("Details", new { id = ticketId });
             }
 
@@ -593,15 +596,15 @@ namespace BugTrackerPM.Models
             string history = "";
             if (historyType == 3)
             {
-                if (historySubType == 1) { HistoryStringBuilder("Comment Created, ", history); }
-                if (historySubType == 2) { HistoryStringBuilder("Comment Edited, ", history); }
+                if (historySubType == 1) { history = HistoryStringBuilder("Comment Created, ", history); }
+                if (historySubType == 2) { history = HistoryStringBuilder("Comment Edited, ", history); }
                
             }
 
             if (historyType == 4)
             {
-                if (historySubType == 1) { HistoryStringBuilder("Attachment Created, ", history); }
-                if (historySubType == 2) { HistoryStringBuilder("Attachment Edited, ", history); }
+                if (historySubType == 1) { history = HistoryStringBuilder("Attachment Created, ", history); }
+                if (historySubType == 2) { history = HistoryStringBuilder("Attachment Edited, ", history); }
                            
             }
             

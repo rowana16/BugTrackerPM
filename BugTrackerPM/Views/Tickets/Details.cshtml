@@ -103,22 +103,18 @@
             <table class="table display myTable">
                 <thead>
                     <tr>
-                        <th> Attchment Image</th>
-                        <th> Attachment Date</th>
-                        <th> Contributor</th>
-                        <th> Description</th>
-                        <th></th>
+                        <th>  Date</th>
+                        <th> Ticket Activity</th>                        
                     </tr>
                 <tbody>
 
-                    @foreach (var item in Model.ticketAttachments)
+                    @foreach (var item in Model.ticketHistories)
                     {
                         <tr>
-                            <td><img class="img-responsive" src="@item.AttachmentURL" alt="Attachment Image" height="50" width="50" /></td>
-                            <td>@Html.DisplayFor(i => item.CreateDate) </td>
-                            <td>@Html.DisplayFor(i => item.Author.DisplayName)  </td>
-                            <td>@Html.DisplayFor(i => item.AttachementDescription)    </td>
-                            <td>@Html.ActionLink("Edit", "EditTicketAttachment", new { id = item.Id }, null)  </td>
+                            
+                            <td>@Html.DisplayFor(i => item.HistoryCreateDate )    </td>
+                            <td>@Html.DisplayFor(i => item.Description )    </td>
+
                         </tr>
                     }
                 </tbody>
