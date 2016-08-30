@@ -79,7 +79,7 @@
                         <th> Attachment Date</th>
                         <th> Contributor</th>
                         <th> Description</th>
-                        <th></th>
+                        
                     </tr>
                 <tbody>
 
@@ -90,7 +90,7 @@
                             <td>@Html.DisplayFor(i => item.CreateDate ) </td>
                             <td>@Html.DisplayFor(i => item.Author.DisplayName )  </td>
                             <td>@Html.DisplayFor(i => item.AttachementDescription )    </td>
-                            <td>@Html.ActionLink("Edit", "EditTicketAttachment", new { id = item.Id }, null)  </td>
+                           
                         </tr>
                     }
                 </tbody>

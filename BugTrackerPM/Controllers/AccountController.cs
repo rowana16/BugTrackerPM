@@ -52,7 +52,7 @@ namespace BugTrackerPM.Controllers
             }
         }
 
-        //
+        //  Login Get ======================================================================================================================
         // GET: /Account/Login
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
@@ -61,7 +61,7 @@ namespace BugTrackerPM.Controllers
             return View();
         }
 
-        //
+        //  Login Post ======================================================================================================================
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
@@ -76,6 +76,45 @@ namespace BugTrackerPM.Controllers
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return RedirectToLocal(returnUrl);
+                case SignInStatus.LockedOut:
+                    return View("Lockout");
+                case SignInStatus.RequiresVerification:
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    return View(model);
+            }
+        }
+
+        //  Login Direct ======================================================================================================================
+        
+        [AllowAnonymous]
+        
+        public async Task<ActionResult> ClickDirect(int role )
+        {
+            string returnUrl = "";
+            LoginViewModel model = new LoginViewModel();
+            
+            switch (role)
+            {
+                case 1: //Bismark
+                    { model.Email = "Bismark@germany.com"; model.Password = "Bismark123!"; break; }
+                case 2: //Napoleon
+                    { model.Email = "Napoleon@France.com"; model.Password = "Bonapart123!"; break; }
+                case 3: //Washington
+                    { model.Email = "BigG@usa.com"; model.Password = "Washington123!"; break; }
+                case 4: //Gandhi
+                    { model.Email = "Gandhi@india.com"; model.Password = "India123!"; break; }
+
+
+            }
+
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
             switch (result)
             {
                 case SignInStatus.Success:

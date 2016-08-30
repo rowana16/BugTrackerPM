@@ -34,3 +34,59 @@
         <img src="~/Content/Images/Sunglasses.jpeg" style="text-align:center; width:250px; height: 175px; margin-top: 15px; margin-right: 50px; border-radius: 25px;" />
     </div>
 </div>
+<hr />
+<div class="row">
+    <h2>Example Login Users:</h2>
+    <div class="col-md-3">
+        <ul>
+            <li> @Html.ActionLink("Login: Otto von Bismark", "ClickDirect", "Account", new { role = 1 },null)  </li>
+            <li style="list-style-type:none">
+                <ul>
+                    <li>Role: Submitter</li>
+                    <li>Email: Bismark@germany.com</li>
+                    <li>Password: Bismark123!</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-3">        
+        <ul>
+            <li> @Html.ActionLink("Login: Napoleon Bonapart", "ClickDirect", "Account",new { role = 2 },null)  </li>           
+            <li style="list-style-type:none">
+                <ul>
+                    <li>Role: Developer</li>
+                    <li>Email: Napoleon@France.com</li>
+                    <li>Password: Bonapart123!</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="col-md-3">
+        <ul>
+            <li> @Html.ActionLink("Login: George Washington", "ClickDirect", "Account", new { role = 3 }, null)  </li>           
+            <li style="list-style-type:none">
+                <ul>
+                    <li>Role: Project Manager</li>
+                    <li>Email: BigG@usa.com</li>
+                    <li>Password: Washington123!</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-3">
+        <ul>
+            <li> @Html.ActionLink("Login: Mahatma Gandhi", "ClickDirect", "Account", new { role = 4 }, null)  </li>           
+            <li style="list-style-type:none">
+                <ul>
+                    <li>Role: Admin</li>
+                    <li>Email: Gandhi@india.com</li>
+                    <li>Password: India123!</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+
+    
+</div>

@@ -40,15 +40,11 @@ namespace BugTrackerPM.Models
                 _userManager = value;
             }
         }
-
-
-
-
-
+        
         private ApplicationDbContext db = new ApplicationDbContext();
         /* ==================================================  Dashboard  ===================================================== */
         // GET: Tickets
-        [Authorize]
+        [Authorize (Roles = "Admin, ProjectManager, Developer, Submitter")]
         public ActionResult Index()
         {
             TicketViewModel ViewModel = new TicketViewModel();
@@ -87,35 +83,38 @@ namespace BugTrackerPM.Models
 
             if (helper.IsUserInRole(currentUserId, "Developer"))
             {
-                //Developer sees all tickets they are assigned
-                var projectTickets = new List<Ticket>();
+                //Developer sees all tickets they are assigned or submitted
+                var submittedTickets = new List<Ticket>();
                 var assignedTickets = new List<Ticket>();
+                var assignedProjects = new List<Project>();
 
-                var projects = currentUser.Projects;
-                foreach (Project p in projects)
-                {
-                    foreach (Ticket t in p.Tickets)
-                    {
-                        if(t.AssignedId == currentUserId)
-                            projectTickets.Add(t);
-                    }
-                }
+                //var projects = currentUser.Projects;
 
-                //assignedTickets = db.Ticket.Where(i => i.AssignedId == currentUserId).ToList();
-                //IEnumerable<Ticket> tickets = projectTickets.Union(assignedTickets);
+
+                //assignedProjects = currentUser.Projects.ToList();
+                //foreach (Project p in assignedProjects)
+                //{
+                //    foreach (Ticket t in p.Tickets)
+                //    {                       
+                //            projectTickets.Add(t);
+                //    }
+                //}
+
+                submittedTickets = db.Ticket.Where(i => i.SubmitterId == currentUserId).ToList();
+                assignedTickets = db.Ticket.Where(i => i.AssignedId == currentUserId).ToList();
+                IEnumerable<Ticket> tickets = submittedTickets.Union(assignedTickets);
 
                 //var assignedProjects = db.Projects.Where(p => p.Users.Contains(currentUser));
-                //var projectTickets = from t in db.Ticket
-                //                     join p in assignedProjects on t.ProjectId equals p.Id                                     
-                //                        select t;
-
-                ViewModel.Ticket = projectTickets;
+               
+                ViewModel.user = currentUser;
+                ViewModel.Ticket = tickets;
                 return View(ViewModel);
             }
 
             if (helper.IsUserInRole(currentUserId, "Submitter"))
             {
                 var tickets = db.Ticket.Where(i => i.SubmitterId == currentUserId);
+                ViewModel.user = currentUser;
                 ViewModel.Ticket = tickets.ToList();
                 return View(ViewModel);
             }
@@ -130,13 +129,18 @@ namespace BugTrackerPM.Models
         {
             TicketDetailsViewModel ViewModel = new TicketDetailsViewModel();
 
-           
+                       
             var ticket = db.Ticket.Find(id);
+           
             ViewModel.ticket = ticket;
             ViewModel.ticketComments = ticket.TicketComments;
             ViewModel.ticketAttachments = ticket.TicketAttachments;
             ViewModel.ticketHistories = ticket.TicketHistories;
 
+            if (ticket.Project == null)
+            {
+                return RedirectToAction("index");
+            }
             if (ticket == null)
             {
                 return HttpNotFound();
@@ -151,7 +155,7 @@ namespace BugTrackerPM.Models
         /* ==================================================  Create Ticket Get ===================================================== */
 
         // GET: Tickets/Create
-        
+        [Authorize (Roles ="Submitter")]
         public ActionResult Create()
         {
             UserRolesHelper helper = new UserRolesHelper(db);
@@ -173,6 +177,7 @@ namespace BugTrackerPM.Models
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Submitter")]
         public ActionResult Create(int PriorityId, int TicketTypeId, string Description, Ticket ticket)
         {
             UserRolesHelper helper = new UserRolesHelper(db);
@@ -206,7 +211,7 @@ namespace BugTrackerPM.Models
         /* ================================================== Edit Tickets Get ===================================================== */
 
         // GET: Tickets/Edit/5
-
+        [Authorize (Roles ="Developer, Submitter")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -225,16 +230,16 @@ namespace BugTrackerPM.Models
             ApplicationUser currentUser = db.Users.Find(currentUserId);
             UserRolesHelper helper = new UserRolesHelper(db);
 
-            if (ticket.ProjectId != null)
+            
+            if (!(/*ticket.AssignedId == currentUserId ||*/ helper.IsUserInRole(User.Identity.GetUserId(),"Developer")/* || ticket.SubmitterId == currentUserId*/ || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
             {
-                if (!(/*ticket.AssignedId == currentUserId ||*/ ticket.Project.Users.Contains(currentUser)/* || ticket.SubmitterId == currentUserId*/ || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
-                {
-                    System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
-                    return RedirectToAction("Index");
-                }
+                System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
+                return RedirectToAction("Index");
             }
+           
             else
             {
+                
                 List<Project> projectList = new List<Project>();
                 projectList = db.Projects.ToList();
 
@@ -269,6 +274,7 @@ namespace BugTrackerPM.Models
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Developer, Submitter")]
         public ActionResult Edit(int ProjectId, int PriorityId , int StatusId, int TicketTypeId, string AssignedId, string SubmitterId, string Description, DateTime CreateDate, Ticket ticket)
         {
             bool bProject = false;
@@ -282,7 +288,7 @@ namespace BugTrackerPM.Models
             if(ProjectId != origTicket.ProjectId) { bProject = true; }
             if (AssignedId != origTicket.AssignedId) {
                 bAssigned = true;
-                sendEmail(ticket.AssignedId, "Ticket Assignment", "You have been assigned to ticket" + ticket.Id + ": " + ticket.Description);
+                sendEmail(ticket.AssignedId, "Ticket Assignment", "You have been assigned to ticket " + ticket.Id + ": " + ticket.Description);
                     }
             if (TicketTypeId != origTicket.TicketTypeId)   { bType = true;  }
             if (StatusId != origTicket.StatusId) { bStatus = true; }
@@ -313,9 +319,7 @@ namespace BugTrackerPM.Models
 
                 }
                 return RedirectToAction("Index");
-            }
-
-            
+            }           
 
             ViewBag.AssignedId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedId);
             ViewBag.PriorityId = new SelectList(db.Prioritiy, "Id", "PriorityLevel", ticket.PriorityId);
@@ -359,7 +363,7 @@ namespace BugTrackerPM.Models
 
 
         /* ==================================================  Create TicketComment Get ===================================================== */
-
+       
         public ActionResult CreateTicketComment(int id)
         {
 
@@ -371,7 +375,7 @@ namespace BugTrackerPM.Models
             UserRolesHelper helper = new UserRolesHelper(db);
 
 
-            if (!(currentTicket.AssignedId == currentUserId || currentTicket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
+            if (!(currentTicket.AssignedId == currentUserId || currentTicket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")) )
             {
                 System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
                 return RedirectToAction("Details", new { id = id });
@@ -555,7 +559,7 @@ namespace BugTrackerPM.Models
             if (!(currentTicket.AssignedId == currentUserId || currentTicket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
             {
                 System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
-                CreateHistory(4, 2, currentTicket.Id);
+               
                 return RedirectToAction("Details", new { id = id });
 
             }
@@ -563,6 +567,7 @@ namespace BugTrackerPM.Models
             return View(viewModel);
         }
 
+        
 
         /* Ticket Changes Overloads :
          *               Ticket Creation ( Ticket ID Only)

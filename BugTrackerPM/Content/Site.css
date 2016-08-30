@@ -66,3 +66,7 @@ select {
     border-radius: 25px;
 }
 
+* { font-family: 'Slabo 27px', cursive;
+    font-size:107%
+}
+

@@ -111,7 +111,7 @@ namespace BugTrackerPM.Models
 
         /* ==============================================  Create Get ===================================*/
         // GET: Projects/Create
-        [Authorize (Roles = "Admin, ProjectManager")]
+        [Authorize (Roles = "Admin")]
         public ActionResult Create()
         {
             //var projects = db.Projects.ToList();
@@ -123,7 +123,7 @@ namespace BugTrackerPM.Models
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, ProjectManager")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create(string ProjectTitle, Project project)
         {
             project.CreateDate = DateTime.Now;
@@ -156,7 +156,18 @@ namespace BugTrackerPM.Models
 
             //////////// Get Project and All Users //////////////////////
             var allUsers = db.Users.ToList();
+            var noUsers = new List<ApplicationUser>();
             EditViewModel.project = db.Projects.Find(id);
+
+            if(db.Projects.Find(id).Users.Count == 0)
+            {
+                EditViewModel.absentUsers = new MultiSelectList(allUsers, "Id", "DisplayName");
+                EditViewModel.assignedUsers = new MultiSelectList(noUsers, "Id", "DisplayName");
+                EditViewModel.absentUserList = allUsers;
+                
+                return View(EditViewModel);
+            }
+
 
             foreach(ApplicationUser checkUser in db.Projects.Find(id).Users)
             {
@@ -206,7 +217,7 @@ namespace BugTrackerPM.Models
       /*========================================== Edit Post Functions ======================================================== */
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Project Manager")]
+        [Authorize(Roles = "Admin, ProjectManager")]
         public ActionResult AddAssignment( int? id, List<string> SelectedAbsentAssignments)
         {
             //project.ProjectTitle = ProjectTitle;
@@ -244,7 +255,7 @@ namespace BugTrackerPM.Models
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Project Manager")]
+        [Authorize(Roles = "Admin, ProjectManager")]
         public ActionResult RemoveAssignment ( int? id, List<string> SelectedCurrentAssignments)
         {
             Project project = db.Projects.Find(id);
