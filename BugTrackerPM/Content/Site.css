@@ -23,15 +23,15 @@ textarea {
     max-width: 280px;
 }
 
-label {
+/*label {
     color: white;
     font-size : 1.7rem;
-}
+}*/
 
-th{
+/*th{
     color:white;
     font-size: 1.7rem;
-}
+}*/
 
 td{
     color:navy;
@@ -67,6 +67,61 @@ select {
 }
 
 * { font-family: 'Slabo 27px', cursive;
-    font-size:107%
+   
 }
+
+.navbar-fixed-top {
+    height: 77px;
+    padding-top:10px;
+    padding-left:50px;
+    padding-right:50px
+}
+
+.navbar-custom{
+    padding-top:10px;
+    
+}
+
+.navbar-custom-left{
+    padding-left:150px;
+}
+
+.sidebar-custom {
+    text-align:center;
+}
+
+.list-group-item {
+    margin-top:0;
+
+}
+
+/* make sidebar nav vertical */ 
+@media (min-width: 768px) {
+  .sidebar-nav .navbar .navbar-collapse {
+    padding: 50px 0 1000px 20px;
+    max-height: none;
+  }
+  .sidebar-nav .navbar ul {
+    float: none;
+    display: block;
+  }
+  .sidebar-nav .navbar li {
+    float: none;
+    display: block;
+  }
+  .sidebar-nav .navbar li a {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .label-custom {
+      font-size: 3rem;
+  }
+
+  
+}
+
+
+
+
 

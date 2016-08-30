@@ -5,20 +5,33 @@
 
 <div class="jumbotron">
 
-    <h1>Bug Tracker</h1>
-    <h3>Home Page</h3>
-
-
+    <h1>BugTrackerPM</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <h1><span class="label label-primary label-custom"><span class="glyphicon glyphicon-calendar"></span> Projects: @ViewBag.Projects.Count </span></h1>
+            
+            
+        </div>
+        <div class="col-md-4">
+            <h1><span class="label label-primary label-custom"><span class="glyphicon glyphicon-tags"></span> Tickets: @ViewBag.Tickets.Count </span></h1>
+            
+        </div>
+        <div class="col-md-4">
+            <h1><span class="label label-primary label-custom"><span class="glyphicon glyphicon-user"></span> Users: @ViewBag.Users.Count </span></h1>
+        </div>
+    </div>
 </div>
 
 <div class="row">
     <div class="col-md-4">
-        <h2>Tickets</h2>
-        @using (Html.BeginForm("index", "tickets"))
-            {<input type="submit" value="Go to Tickets" class="btn btn-primary" />          }
-        <img src="~/Content/Images/Mosquito.jpeg" style="text-align:center; width:250px; height: 175px; margin-top: 15px; margin-right: 50px; border-radius: 25px;" />
-    </div>
-    <div class="col-md-4">
+        <div class="list-group">
+            <h2 class="list-group-item active"><u>Tickets by Status</u></h2>
+            <h4 class="list-group-item">Created: @ViewBag.created</h4>
+            <h4 class="list-group-item">Assigned: @ViewBag.assigned</h4>
+            <h4 class="list-group-item">In Process: @ViewBag.inProcess</h4>
+            <h4 class="list-group-item">Review: @ViewBag.review</h4>
+            <h4 class="list-group-item">Resolved: @ViewBag.resolved</h4>
+        </div>
         <h2>Projects</h2>
 
         @using (Html.BeginForm("index", "projects"))
@@ -39,7 +52,7 @@
     <h2>Example Login Users:</h2>
     <div class="col-md-3">
         <ul>
-            <li> @Html.ActionLink("Login: Otto von Bismark", "ClickDirect", "Account", new { role = 1 },null)  </li>
+            <li> @Html.ActionLink("Login: Otto von Bismark", "ClickDirect", "Account", new { role = 1 }, null)  </li>
             <li style="list-style-type:none">
                 <ul>
                     <li>Role: Submitter</li>
@@ -49,9 +62,9 @@
             </li>
         </ul>
     </div>
-    <div class="col-md-3">        
+    <div class="col-md-3">
         <ul>
-            <li> @Html.ActionLink("Login: Napoleon Bonapart", "ClickDirect", "Account",new { role = 2 },null)  </li>           
+            <li> @Html.ActionLink("Login: Napoleon Bonapart", "ClickDirect", "Account", new { role = 2 }, null)  </li>
             <li style="list-style-type:none">
                 <ul>
                     <li>Role: Developer</li>
@@ -61,10 +74,10 @@
             </li>
         </ul>
     </div>
-    
+
     <div class="col-md-3">
         <ul>
-            <li> @Html.ActionLink("Login: George Washington", "ClickDirect", "Account", new { role = 3 }, null)  </li>           
+            <li> @Html.ActionLink("Login: George Washington", "ClickDirect", "Account", new { role = 3 }, null)  </li>
             <li style="list-style-type:none">
                 <ul>
                     <li>Role: Project Manager</li>
@@ -76,7 +89,7 @@
     </div>
     <div class="col-md-3">
         <ul>
-            <li> @Html.ActionLink("Login: Mahatma Gandhi", "ClickDirect", "Account", new { role = 4 }, null)  </li>           
+            <li> @Html.ActionLink("Login: Mahatma Gandhi", "ClickDirect", "Account", new { role = 4 }, null)  </li>
             <li style="list-style-type:none">
                 <ul>
                     <li>Role: Admin</li>
@@ -86,7 +99,4 @@
             </li>
         </ul>
     </div>
-
-
-    
 </div>
