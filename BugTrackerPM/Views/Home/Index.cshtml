@@ -1,54 +1,71 @@
-﻿@{
+﻿@using BugTrackerPM.Models
+@model HomeViewModel
+@{
     ViewBag.Title = "Home Page";
 }
 
 
 <div class="jumbotron">
 
-    <h1>BugTrackerPM</h1>
+    <h1 class="font">BugTrackerPM</h1>
     <div class="row">
         <div class="col-md-4">
-            <h1><span class="label label-primary label-custom"><span class="glyphicon glyphicon-calendar"></span> Projects: @ViewBag.Projects.Count </span></h1>
-            
-            
+            <h1><span class="label label-primary label-custom font"><span class="glyphicon glyphicon-calendar"></span>  Projects: @Model.viewProjects.Count </span></h1>
+
+
         </div>
         <div class="col-md-4">
-            <h1><span class="label label-primary label-custom"><span class="glyphicon glyphicon-tags"></span> Tickets: @ViewBag.Tickets.Count </span></h1>
-            
+            <h1><span class="label label-primary label-custom font"><span class="glyphicon glyphicon-tags"></span>  Tickets: @Model.viewTickets.Count </span></h1>
+
         </div>
         <div class="col-md-4">
-            <h1><span class="label label-primary label-custom"><span class="glyphicon glyphicon-user"></span> Users: @ViewBag.Users.Count </span></h1>
+            <h1><span class="label label-primary label-custom font"><span class="glyphicon glyphicon-user"></span>  Users: @Model.viewUsers.Count </span></h1>
         </div>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-4">
-        <div class="list-group">
-            <h2 class="list-group-item active"><u>Tickets by Status</u></h2>
-            <h4 class="list-group-item">Created: @ViewBag.created</h4>
-            <h4 class="list-group-item">Assigned: @ViewBag.assigned</h4>
-            <h4 class="list-group-item">In Process: @ViewBag.inProcess</h4>
-            <h4 class="list-group-item">Review: @ViewBag.review</h4>
-            <h4 class="list-group-item">Resolved: @ViewBag.resolved</h4>
+        <div class="list-group font">
+            <h2 class="list-group-item active  font"><i>Tickets by Status</i></h2>
+            <h4 class="list-group-item font">Created: @Model.created</h4>
+            <h4 class="list-group-item font">Assigned: @Model.assigned</h4>
+            <h4 class="list-group-item font">In Process: @Model.inProcess</h4>
+            <h4 class="list-group-item font">Review: @Model.review</h4>
+            <h4 class="list-group-item font">Resolved: @Model.resolved</h4>
         </div>
-        <h2>Projects</h2>
-
-        @using (Html.BeginForm("index", "projects"))
-            {<input type="submit" value="Go to Projects" class="btn btn-primary" />          }
-        <img src="~/Content/Images/Fireworks.jpeg" style="text-align:center; width:250px; height: 175px; margin-top: 15px; margin-right: 50px; border-radius: 25px;" />
     </div>
-    <div class="col-md-4">
-
-
-        <h2>Users</h2>
-        @using (Html.BeginForm("index", "Admin"))
-            {<input type="submit" value="Go to Users" class="btn btn-primary" />  }
-        <img src="~/Content/Images/Sunglasses.jpeg" style="text-align:center; width:250px; height: 175px; margin-top: 15px; margin-right: 50px; border-radius: 25px;" />
+    <div class="col-md-8">
+        <div class="panel">
+            <h2 class="panel-heading panel-primary font">Newly Created Tickets:</h2>
+            <div class="panel-body">
+                <table class="table myTable">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Submitter</th>
+                            <th>Assigned</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.createdTickets)
+                        {
+                            <tr>
+                                <td>@item.Description </td>
+                                <td>@item.Submitter.DisplayName</td>
+                                <td>@item.Assigned.DisplayName</td>
+                                <td>@Html.ActionLink("Edit", "Edit", "Tickets", new { id = @item.Id }, null)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 <hr />
-<div class="row">
+@*<div class="row">
     <h2>Example Login Users:</h2>
     <div class="col-md-3">
         <ul>
@@ -99,4 +116,4 @@
             </li>
         </ul>
     </div>
-</div>
+</div>*@

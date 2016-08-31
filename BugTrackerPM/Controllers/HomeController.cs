@@ -15,29 +15,21 @@ namespace BugTrackerPM.Controllers
 
         public ActionResult Index()
         {
-            List<Project> viewProjects = new List<Project>();
-            List<Ticket> viewTickets = new List<Ticket>();
-            List<ApplicationUser> viewUsers = new List<ApplicationUser>();
-
-            viewProjects = db.Projects.ToList();
-            viewTickets = db.Ticket.ToList();
-            viewUsers = db.Users.ToList();
-
-            int created = viewTickets.Count(p => p.Status.StatusDescription == "Created");
-            int assigned = viewTickets.Count(p => p.Status.StatusDescription == "Assigned");
-            int inProcess = viewTickets.Count(p => p.Status.StatusDescription == "In Process");
-            int review = viewTickets.Count(p => p.Status.StatusDescription == "Review");
-            int resolved = viewTickets.Count(p => p.Status.StatusDescription == "Resolved");
+            HomeViewModel viewModel = new HomeViewModel();
             
-            ViewBag.created = created;
-            ViewBag.assigned = assigned;
-            ViewBag.inProcess = inProcess;
-            ViewBag.review = review;
-            ViewBag.resolved = resolved;
-            ViewBag.Projects = viewProjects;
-            ViewBag.Tickets = viewTickets;
-            ViewBag.Users = viewUsers;
-            return View();
+
+            viewModel.viewProjects = db.Projects.ToList();
+            viewModel.viewTickets = db.Ticket.ToList();
+            viewModel.viewUsers = db.Users.ToList();
+
+            viewModel.createdTickets = viewModel.viewTickets.Where(p => p.Status.StatusDescription == "Created").ToList();
+            viewModel.created = viewModel.createdTickets.Count();
+            viewModel.assigned = viewModel.viewTickets.Count(p => p.Status.StatusDescription == "Assigned");
+            viewModel.inProcess = viewModel.viewTickets.Count(p => p.Status.StatusDescription == "In Process");
+            viewModel.review = viewModel.viewTickets.Count(p => p.Status.StatusDescription == "Review");
+            viewModel.resolved = viewModel.viewTickets.Count(p => p.Status.StatusDescription == "Resolved");
+            
+            return View(viewModel);
         }
 
         public ActionResult About()

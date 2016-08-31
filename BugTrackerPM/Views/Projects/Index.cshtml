@@ -5,12 +5,12 @@
     ViewBag.Title = "Index";
 }
 <img src="~/Content/Images/Fireworks.jpeg" style="float: right; width:250px; height: 175px; margin-bottom: 15px; margin-right: 50px; border-radius: 25px;" />
-<h2 style="margin-top: 70px">Index For: @Model.loggedInUser.DisplayName</h2>
+<div class="well col-md-8">
+    <h2 class=" font">Projects For: @Model.loggedInUser.DisplayName</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table myTable">
+    <h3> @Html.ActionLink("Create New", "Create")</h3>
+</div>
+<table class="table myTable  font">
     <thead>
         <tr>
             <th>Project Title</th>

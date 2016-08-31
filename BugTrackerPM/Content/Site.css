@@ -12,8 +12,9 @@
 /* Override the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
 */
-.dl-horizontal dt {
+.dl-horizontal dt, .dl-horizontal dd {
     white-space: normal;
+    font-size: 2rem;
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
@@ -70,6 +71,10 @@ select {
    
 }
 
+#lg1, #login, .font {
+    font-family: 'Slabo 27px', cursive;
+}
+
 .navbar-fixed-top {
     height: 77px;
     padding-top:10px;
@@ -91,14 +96,67 @@ select {
 }
 
 .list-group-item {
-    margin-top:0;
+   background-color:whitesmoke ;
+    color:steelblue;
+    margin-top: 0;
+    border:1px solid steelblue;
+}
+
+a.list-group-item .list-group-item-heading.font , .list-group-item-text {
+    color:steelblue;
+}
+
+.label-custom {
+    padding: 15px;
+}
+
+.panel-primary{
+    background-color: whitesmoke;
+    color:steelblue;
+    margin-top: 0;
+    border:1px solid steelblue;
 
 }
+
+.jumbotron {
+    background-color:whitesmoke;
+    color: steelblue;
+    border:1px solid steelblue;
+
+}
+
+.well{
+    background-color:whitesmoke;
+    color: steelblue;
+    border:1px solid steelblue;
+    margin-top:33px
+}
+
+.well h2, .well h3, .well h4, .font.font-color {
+    color: steelblue;
+}
+
+div.well.wellStack{
+    margin-top:3px;
+    margin-bottom:3px;
+    padding:3px;
+}
+
+#wellTitle{
+    background-color:#fc7700;
+    color:white;
+    margin-top:0;
+}
+.body-position{
+    margin-top:50px;
+}
+
+
 
 /* make sidebar nav vertical */ 
 @media (min-width: 768px) {
   .sidebar-nav .navbar .navbar-collapse {
-    padding: 50px 0 1000px 20px;
+    padding: 50px 0 200px 20px;
     max-height: none;
   }
   .sidebar-nav .navbar ul {

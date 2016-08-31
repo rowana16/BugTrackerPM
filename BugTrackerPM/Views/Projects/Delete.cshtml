@@ -1,32 +1,41 @@
-﻿@model BugTrackerPM.Models.Project
+﻿@using BugTrackerPM.Models
+@model ProjectListElement
 
 @{
     ViewBag.Title = "Delete";
 }
+<div class="row">
+    <img src="~/Content/Images/Fireworks.jpeg" style="float: right; width:250px; height: 175px; margin-bottom: 15px; margin-right: 50px; border-radius: 25px;" />
+    <div class="well col-md-8">
+        <h2>Delete Project: @Model.project.ProjectTitle </h2>
+        <h4>Are you sure you want to delete this project?</h4>
+    </div>
+</div>
 
-<img src="~/Content/Images/Fireworks.jpeg" style="float: right; width:250px; height: 175px; margin-bottom: 15px; margin-right: 50px; border-radius: 25px;" />
 
-<h2>Delete</h2>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Project</h4>
-    <hr />
+<div class="row">
+    
+   
     <dl class="dl-horizontal">
-        <dt><label>Project Title:</label></dt>
-        <dd>@Html.DisplayNameFor(model => model.ProjectTitle)</dd>
+
+        <dt><label>Assigned Users:</label></dt>
+        <dd>@Model.project.Users.Count </dd>
+        <dt><label>Tickets Included:</label></dt>
+        <dd>@Model.project.Tickets.Count</dd>
+
         <dt><label>Create Date:</label></dt>
-        <dd> @Html.DisplayFor(model => model.CreateDate)</dd>
+        <dd> @Html.DisplayFor(model => model.project.CreateDate)</dd>
         <dt><label>Update Date:</label></dt>
-        <dd> @Html.DisplayFor(model => model.UpdateDate) </dd>
+        <dd> @Html.DisplayFor(model => model.project.UpdateDate) </dd>
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-primary" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="Delete" class="btn btn-primary" /> 
+            <h3>@Html.ActionLink("Back to List", "Index")</h3>
         </div>
     }
 </div>

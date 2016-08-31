@@ -5,25 +5,18 @@
 }
 
 <img src="~/Content/Images/Fireworks.jpeg" style="float: right; width:250px; height: 175px; margin-bottom: 15px; margin-right: 50px; border-radius: 25px;" />
-<h2 style="margin-top:70px">Project Details</h2>
+<div class="well col-md-8">
+    <h2 class="font">Project Details: @Model.ProjectTitle </h2>
+    <h4 class="font">Associated Ticket Count: @Model.Tickets.Count </h4>
+    <h4 class="font">Associated User Count: @Model.Users.Count </h4>
+    <h4 class="font">Project Create Date: @Model.CreateDate </h4>
+    <h4 class="font">Project Update Date: @Model.UpdateDate </h4>
+</div>
 
 <div>
-
-    <hr />
-    <div class="row">
-        <div class="col-md-8">            
-            <dl class="dl-horizontal" style="margin-top:45px;">
-                <dt><label>Project Title:</label></dt>
-                <dd>@Html.DisplayFor(model => model.ProjectTitle)</dd>
-                <dt><label>Create Date:</label></dt>
-                <dd>@Html.DisplayFor(model => model.CreateDate)</dd>
-                <dt><label>Update Date:</label></dt>
-                <dd>@Html.DisplayFor(model => model.UpdateDate)</dd>
-            </dl>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+    <div class="row" >
+        <div class="col-md-12" style="margin-top:25px;">
+            <h3 class="font font-color">Associated Tickets</h3>
             <table class="table display myTable">
                 <thead>
                     <tr>
@@ -62,7 +55,7 @@
         </div>
     </div>
 </div>
-<p>
+<h3>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
-</p>
+</h3>

@@ -3,17 +3,18 @@
 
 @{
     ViewBag.Title = "Index";
-   
+
 }
 
 <img src="~/Content/Images/Mosquito.jpeg" style="float: right; width:250px; height: 175px; margin-bottom: 15px; margin-right: 50px; border-radius: 25px;" />
+<div class="well col-md-8">
+    <h2 class="font">Tickets for: @Model.user.DisplayName</h2>
+    <h3>@Html.ActionLink("Create New", "Create")</h3>
+</div>
 
-<h2 style="margin-top: 70px">Tickets for @Model.user.DisplayName</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table display myTable" >
+
+<table class="table display myTable">
     <thead>
         <tr>
             <th> Project Title</th>
@@ -41,8 +42,7 @@
                 <td>@Html.DisplayFor(modelItem => item.UpdatedDate) </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Comments", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    @Html.ActionLink("Comments", "Details", new { id = item.Id }) 
                 </td>
             </tr>
         }

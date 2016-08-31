@@ -322,7 +322,12 @@ namespace BugTrackerPM.Models
             {
                 return HttpNotFound();
             }
-            return View(project);
+
+            ProjectListElement viewModel = new ProjectListElement();
+            viewModel.project = project;
+            
+
+            return View(viewModel);
         }
 
         // POST: Projects/Delete/5

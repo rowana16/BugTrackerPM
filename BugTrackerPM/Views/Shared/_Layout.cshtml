@@ -1,16 +1,18 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - BugTrackerPM</title>
     
-    @Styles.Render("~/Content/css")
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
-    <link href="~/Content/datatables.min.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="~/Content/datatables.min.css" rel="stylesheet" type="text/css" />    
     <link rel="shortcut icon" href="~/images/ico/favicon.png">
     <meta name="description" content="The description of my page" />
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    
 
     
 
@@ -70,26 +72,52 @@
                         </div>
                         <div class="navbar-collapse collapse sidebar-navbar-collapse">
                             <div class="nav navbar-nav sidebar-custom">
-                                <h2>Quick Links</h2>
-                                <div class="list-group">
-                                    <a href="@Url.Action("index", "Projects")" class="list-group-item">
-                                        <h4 class="list-group-item-heading">Projects</h4>
-                                        <p class="list-group-item-text">See Your Projects</p>
+
+                                <div class="list-group" id="lg1">
+                                    <h2 class="list-group-item active font"><i>Quick Links</i></h2>
+                                    <a href="@Url.Action("index", "Projects")" class="list-group-item font">
+                                        <h4 class="list-group-item-heading font"><span class="glyphicon glyphicon-calendar"></span> Projects</h4>
+                                        <p class="list-group-item-text font">See Your Projects</p>
                                     </a>
-                                    <a href="@Url.Action("index", "Tickets")" class="list-group-item">
-                                        <h4 class="list-group-item-heading">Tickets</h4>
-                                        <p class="list-group-item-text">See Your Tickets</p>
+                                    <a href="@Url.Action("index", "Tickets")" class="list-group-item font">
+                                        <h4 class="list-group-item-heading font"><span class="glyphicon glyphicon-tags"></span> Tickets</h4>
+                                        <p class="list-group-item-text font">See Your Tickets</p>
                                     </a>
-                                    <a href="@Url.Action("index", "Admin")" class="list-group-item">
-                                        <h4 class="list-group-item-heading">Users</h4>
-                                        <p class="list-group-item-text">Manage User Roles (Admin)</p>
+                                    <a href="@Url.Action("index", "Admin")" class="list-group-item font">
+                                        <h4 class="list-group-item-heading font"><span class="glyphicon glyphicon-user"></span> Users</h4>
+                                        <p class="list-group-item-text font">Manage User Roles (Admin)</p>
                                     </a>
                                     @*@Html.ActionLink("Projects", "index", "projects", new { @class = "list-group-item" })
 
-                                    @Html.ActionLink("Tickets", "index", "tickets", new { @class = "list-group-item" })
-                                    @Html.ActionLink("Account Management", "index", "Admin", new { @class = "list-group-item" })*@
+                                        @Html.ActionLink("Tickets", "index", "tickets", new { @class = "list-group-item" })
+                                        @Html.ActionLink("Account Management", "index", "Admin", new { @class = "list-group-item" })*@
                                     @*<li><a href="#">Menu Item 4</a></li>*@
                                     @*<li><a href="#">Reviews <span class="badge">1,118</span></a></li>*@
+                                </div>
+                                <div class="list-group" id="login">
+                                    <h2 class="list-group-item active font"><i>Quick Logins</i></h2>
+                                    <a href="@Url.Action("ClickDirect", "Account",new { role = 4 }, null)" class="list-group-item">
+                                        <h4 class="list-group-item-heading font">Mahatma Gandhi</h4>
+                                        <h5 class="list-group-item-text font">Administrator</h4>
+                                        @*<ul class="list-group-item-text">
+                                                <li><span class="glyphicon glyphicon-check"></span> Assign User Roles</li>
+                                                <li><span class="glyphicon glyphicon-check"></span> Create Projects</li>
+                                                <li><span class="glyphicon glyphicon-check"></span> Create Tickets</li>
+                                            </ul>*@
+                                    </a>
+                                    <a href="@Url.Action("ClickDirect", "Account", new { role = 3 }, null)" class="list-group-item">
+                                        <h4 class="list-group-item-heading font">George Washington</h4>
+                                        <h5 class="list-group-item-text font">Project Manager</h5>
+                                    </a>
+                                    <a href="@Url.Action("ClickDirect", "Account", new { role = 2 }, null)" class="list-group-item">
+                                        <h4 class="list-group-item-heading font">Napoleon Bonapart</h4>
+                                        <h5 class="list-group-item-text font">Developer</h5>
+                                    </a>
+                                    <a href="@Url.Action("ClickDirect", "Account", new { role = 1 }, null)" class="list-group-item">
+                                        <h4 class="list-group-item-heading font">Otto Von Bismark</h4>
+                                        <h5 class="list-group-item-text font">Submitter</h5>
+                                    </a>
+
                                 </div>
                             </div>
                         </div><!--/.nav-collapse -->
@@ -97,7 +125,7 @@
                 </div>
             </div>
             <div class="col-sm-10">
-                <div class="container body-content">
+                <div class="container body-content body-position">
                     @RenderBody()
                     <hr />
                     <footer>

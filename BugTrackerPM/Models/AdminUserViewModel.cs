@@ -46,5 +46,21 @@ namespace BugTrackerPM.Models
         public IEnumerable<AdminIndexViewModel>details { get; set; }
     }
 
+    public class HomeViewModel
+    {
+        public ApplicationUser currentUser { get; set; }
+        public List<Ticket> createdTickets { get; set; }
+        public List<Project> viewProjects { get; set; }
+        public List<Ticket> viewTickets { get; set; }
+        public List<ApplicationUser> viewUsers { get; set; }
+        public int created { get; set; }
+        public int assigned { get; set; }
+        public int inProcess { get; set; }
+        public int review { get; set; }
+        public int resolved { get; set; }
+        
+        
+
+    }
 
 }
