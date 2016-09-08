@@ -86,7 +86,7 @@
                     @foreach (var item in Model.ticketAttachments )
                     {
                         <tr>
-                            <td><img class="img-responsive" src="@item.AttachmentURL" alt="Attachment Image" height="50" width="50" /></td>
+                            <td><a href="@item.AttachmentURL"><img class="img-responsive" src="@item.AttachmentURL" alt="Attachment Image" height="50" width="50" /></a></td>
                             <td>@Html.DisplayFor(i => item.CreateDate ) </td>
                             <td>@Html.DisplayFor(i => item.Author.DisplayName )  </td>
                             <td>@Html.DisplayFor(i => item.AttachementDescription )    </td>

@@ -32,6 +32,14 @@
 
 
                     <div class="well wellStack">
+                        <label>Assigned User:</label>
+                        <div>
+                            @Html.DropDownList("AssignedId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.AssignedId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="well wellStack">
                         <label>Ticket Type:</label>
                         <div>
                             @Html.DropDownList("TicketTypeId", null, htmlAttributes: new { @class = "form-control" })

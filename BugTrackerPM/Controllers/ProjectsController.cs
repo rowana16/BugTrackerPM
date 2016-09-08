@@ -18,7 +18,7 @@ namespace BugTrackerPM.Models
 
         /* ==============================================  Get Dashboard List ===================================*/
         // GET: Projects
-        [Authorize(Roles = "Admin, ProjectManager, Developer")]
+        [Authorize(Roles = "Admin, ProjectManager, Developer, Submitter")]
         public ActionResult Index()
         {
             ProjectIndexViewModel passModel = new ProjectIndexViewModel();

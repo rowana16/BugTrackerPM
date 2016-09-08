@@ -166,6 +166,7 @@ namespace BugTrackerPM.Models
             }
             ViewBag.PriorityId = new SelectList(db.Prioritiy, "Id", "PriorityLevel");
             ViewBag.TicketTypeId = new SelectList(db.TicketType, "Id", "TypeDescription");
+            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "ProjectTitle");
             return View();
         }
 
@@ -178,7 +179,7 @@ namespace BugTrackerPM.Models
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Submitter")]
-        public ActionResult Create(int PriorityId, int TicketTypeId, string Description, Ticket ticket)
+        public ActionResult Create(int PriorityId, int TicketTypeId, string Description, int ProjectId, Ticket ticket)
         {
             UserRolesHelper helper = new UserRolesHelper(db);
             
@@ -188,7 +189,7 @@ namespace BugTrackerPM.Models
             }
             ticket.SubmitterId = User.Identity.GetUserId();
             ticket.AssignedId = "eb01b7bf-922a-49db-a36b-cf3b835c0400"; //Admin User Id
-            //ticket.ProjectId = 1;
+            ticket.ProjectId = ProjectId;
             ticket.PriorityId = PriorityId;
             ticket.TicketTypeId = TicketTypeId;
             ticket.StatusId = 1;
@@ -211,7 +212,7 @@ namespace BugTrackerPM.Models
         /* ================================================== Edit Tickets Get ===================================================== */
 
         // GET: Tickets/Edit/5
-        [Authorize (Roles ="Developer, Submitter")]
+        [Authorize (Roles ="Developer, Submitter, ProjectManager, Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -231,7 +232,7 @@ namespace BugTrackerPM.Models
             UserRolesHelper helper = new UserRolesHelper(db);
 
             
-            if (!(/*ticket.AssignedId == currentUserId ||*/ helper.IsUserInRole(User.Identity.GetUserId(),"Developer")/* || ticket.SubmitterId == currentUserId*/ || helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))
+            if (!(ticket.AssignedId == currentUserId || ticket.SubmitterId == currentUserId || helper.IsUserInRole(User.Identity.GetUserId(), "Admin") || helper.IsUserInRole(User.Identity.GetUserId(), "ProjectManager")))
             {
                 System.Web.HttpContext.Current.Response.Write("<script language='JavaScript'> alert('You do Not Have Access To This Ticket')</Script>");
                 return RedirectToAction("Index");
@@ -263,6 +264,11 @@ namespace BugTrackerPM.Models
             ViewBag.StatusId = new SelectList(db.Status, "Id", "StatusDescription", ticket.StatusId);
             ViewBag.SubmitterId = new SelectList(db.Users, "Id", "FirstName", ticket.SubmitterId);
             ViewBag.TicketTypeId = new SelectList(db.TicketType, "Id", "TypeDescription", ticket.TicketTypeId);
+
+            if (helper.IsUserInRole(User.Identity.GetUserId(), "ProjectManager"))
+            {
+                return View("EditAsPM", ticket);
+            }
             return View(ticket);
         }
 
